@@ -30,438 +30,690 @@
             overflow-x: hidden;
         }
 
-        header {
-            text-align: center;
-            padding: 1.5rem;
-            transition: opacity 0.4s;
+        header { 
+            padding: 2rem 1rem 1rem; 
+            text-align: center; 
+            position: relative; 
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
-
-        h1 {
-            color: var(--shop-white);
-            text-shadow: 2px 2px 0 var(--text-dark), -2px -2px 0 var(--text-dark), 2px -2px 0 var(--text-dark), -2px 2px 0 var(--text-dark);
-            font-size: 2.5rem;
-            margin: 0;
-            letter-spacing: 2px;
-        }
-
-        #builder {
-            background: var(--shop-cream);
+        
+        .app-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 22px;
             border: 4px solid var(--text-dark);
-            border-radius: 20px;
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 8px 0 var(--text-dark);
-            transition: opacity 0.4s;
-            margin-bottom: 2rem;
+            box-shadow: 4px 4px 0 var(--text-dark);
+            object-fit: cover;
         }
 
-        .category-title {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            border-bottom: 2px dashed var(--shop-pink);
-            padding-bottom: 5px;
+        h1 { 
+            font-size: 2.5rem; margin: 0; color: white; 
+            text-shadow: 3px 3px 0px var(--text-dark);
+            text-transform: uppercase;
         }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .opt-btn {
-            background: var(--shop-white);
-            border: 2px solid var(--text-dark);
-            border-radius: 12px;
-            padding: 10px;
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        .opt-btn:active { transform: translateY(2px); }
-        .opt-btn.selected { background: var(--shop-yellow); }
-
-        .bake-btn {
-            width: 100%;
-            background: var(--shop-pink);
-            color: var(--shop-white);
+        #builder { 
+            width: 95%; max-width: 500px; padding: 1.5rem; 
+            background: var(--shop-cream); 
+            border-radius: 30px; 
+            box-shadow: 0 15px 0px rgba(0,0,0,0.1);
+            margin-bottom: 4rem;
             border: 4px solid var(--text-dark);
-            border-radius: 15px;
-            padding: 15px;
-            font-size: 1.5rem;
-            font-family: inherit;
-            font-weight: bold;
-            text-shadow: 1px 1px 0 var(--text-dark);
-            cursor: pointer;
-            margin-top: 10px;
-            box-shadow: 0 6px 0 var(--text-dark);
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            position: relative;
+            z-index: 5;
         }
 
-        .bake-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 var(--text-dark);
+        .section-label {
+            font-size: 1rem; text-transform: uppercase; color: var(--text-dark);
+            margin: 1.5rem 0 0.75rem; font-weight: 900;
         }
 
+        .visual-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        .visual-card {
+            background: white; border: 3px solid #e2e8f0; border-radius: 20px;
+            padding: 15px; text-align: center; cursor: pointer; transition: 0.2s;
+        }
+        .visual-card.active { border-color: var(--shop-pink); background: #fff0f3; transform: scale(1.02); }
+
+        .glaze-row { display: flex; justify-content: space-between; gap: 10px; }
+        .glaze-drip-ui { flex: 1; height: 60px; cursor: pointer; border-radius: 10px; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; }
+        .glaze-drip-ui.active { border-color: var(--text-dark); transform: scale(1.1); }
+        .glaze-drip-ui span { color: white; font-size: 0.85rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+
+        .topping-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .topping-item {
+            background: white; border: 3px solid #e2e8f0; border-radius: 15px;
+            padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer;
+        }
+        .topping-item.active { border-color: var(--shop-pink); background: #fff0f3; }
+
+        .slider { width: 100%; height: 12px; margin: 15px 0; cursor: pointer; }
+
+        .btn-primary {
+            width: 100%; background: #4ade80; color: var(--text-dark); border: 4px solid var(--text-dark);
+            padding: 1.25rem; font-size: 1.3rem; font-weight: 900; border-radius: 20px;
+            margin-top: 2rem; cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
+            transition: all 0.1s;
+        }
+        .btn-primary:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--text-dark); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        /* CANVAS OVERLAY */
         #canvas-container {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 10;
-            opacity: 0;
-            transition: opacity 0.5s;
-            background: var(--shop-pink);
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 10; display: none; opacity: 0; transition: opacity 0.8s ease;
+            pointer-events: none;
         }
 
-        /* --- VERDICT MODAL STYLES --- */
+        /* VERDICT OVERLAY */
         #verdict-backdrop {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 100;
-            opacity: 0;
-            transition: opacity 0.3s;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(255, 107, 158, 0.3); backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 15; display: none; opacity: 0; transition: opacity 0.6s ease;
         }
 
         #verdict-container {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -40%);
-            width: 90%;
-            max-width: 450px;
-            
-            /* FIX 3: Badge Safe Zone */
-            max-height: 85vh; /* Prevents stretching off screen */
-            margin-top: 25px; /* Extra room at top for the badge */
-            padding: 3.5rem 1.5rem 1.5rem 1.5rem; /* pt-3.5rem safely houses the badge */
-            
-            background: var(--shop-cream);
-            border: 4px solid var(--text-dark);
-            border-radius: 20px;
-            flex-direction: column;
-            z-index: 101;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            position: fixed; 
+            /* FIX 3: Badge Safe Zone - shifted top down slightly & added max-height */
+            top: 53%; 
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.5) translateY(100px);
+            background: var(--shop-white); border: 6px solid var(--text-dark);
+            border-radius: 30px; 
+            padding-top: 3.5rem; 
+            padding-bottom: 1.5rem; 
+            z-index: 20;
+            display: none; opacity: 0;
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            width: 90%; max-width: 450px; 
+            max-height: 82vh; /* Prevents container from pushing badge off the top */
+            flex-direction: column; align-items: center;
+            box-shadow: 0px 20px 0px rgba(74, 44, 42, 0.15);
         }
 
         #verdict-container.show {
-            transform: translate(-50%, -50%);
-            opacity: 1;
+            opacity: 1; transform: translate(-50%, -50%) scale(1) translateY(0);
         }
+
+        /* FIX 1: Inner Scroll Area */
+        .verdict-scroll-area {
+            width: 100%;
+            flex: 1 1 auto; /* Allows container to shrink/grow and scroll within parent */
+            min-height: 0;  /* Critical: prevents flex children from blowing out container height */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 1.5rem;
+            margin-bottom: 10px; /* Breathing room above the buttons */
+        }
+        
+        /* Custom styled scrollbars for the new scroll area */
+        .verdict-scroll-area::-webkit-scrollbar { width: 6px; }
+        .verdict-scroll-area::-webkit-scrollbar-track { background: transparent; }
+        .verdict-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
         .score-badge {
-            position: absolute;
-            top: -40px; /* Popped out, but kept safe by container margin */
-            left: 50%;
-            transform: translateX(-50%);
+            position: absolute; 
+            top: -50px; left: 50%; margin-left: -50px; 
             background: var(--shop-yellow);
-            border: 4px solid var(--text-dark);
-            border-radius: 50%;
-            width: 80px; height: 80px;
-            display: flex;
-            align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: bold;
-            box-shadow: 0 5px 0 var(--text-dark);
-            z-index: 102;
+            width: 100px; height: 100px; border: 6px solid var(--text-dark);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem; font-weight: 900; transform: rotate(10deg);
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+            z-index: 25; 
         }
 
-        /* FIX 1: Scrollable Inner Content Area */
-        .verdict-scroll-area {
-            overflow-y: auto;
-            flex: 1 1 auto; /* Allows expanding to fill available space, but scrolling when full */
-            min-height: 0; /* Critical for flex scrolling */
-            margin-bottom: 15px;
-            padding-right: 5px; /* Breathing room for scrollbar */
-            font-size: 1.1rem;
-            line-height: 1.4;
+        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.4rem; }
+        
+        #verdict-text {
+            font-family: serif; font-size: 1.15rem; line-height: 1.5; text-align: center;
+            margin-bottom: 1.5rem; color: #333; min-height: 80px;
         }
-
-        /* Custom fun scrollbar */
-        .verdict-scroll-area::-webkit-scrollbar { width: 8px; }
-        .verdict-scroll-area::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 4px; }
-        .verdict-scroll-area::-webkit-scrollbar-thumb { background: var(--shop-pink); border-radius: 4px; border: 2px solid var(--text-dark); }
 
         /* FIX 2: Responsive Chef Buttons */
-        .chef-controls {
-            display: flex;
-            flex-wrap: wrap; /* Allows buttons to stack gracefully on tiny screens */
-            gap: 8px;
-            justify-content: center;
-            flex: 0 0 auto;
-            margin-bottom: 15px;
+        .chef-switcher {
+            display: flex; 
+            flex-wrap: wrap; /* Allows buttons to stack smoothly */
+            justify-content: center; 
+            gap: 8px; 
+            margin-bottom: 1.5rem; 
+            width: 100%;
+            flex: 0 0 auto; /* Prevents switcher from squishing inside flex column */
         }
 
         .chef-btn {
-            flex: 1 1 calc(33.333% - 8px); /* Stretch to fit evenly */
-            min-width: 80px; /* Prevent them from squishing into unreadable text */
-            padding: 8px 5px;
-            font-family: inherit;
-            font-weight: bold;
-            font-size: 0.9rem;
-            background: var(--shop-white);
-            border: 2px solid var(--text-dark);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
+            flex: 1 1 calc(33.333% - 8px); 
+            min-width: 80px; /* Stops buttons from shrinking to unreadable sizes */
+            padding: 0.6rem; border: 3px solid var(--text-dark); border-radius: 12px;
+            font-size: 0.75rem; font-weight: 900; cursor: pointer; background: white; transition: 0.2s;
         }
+        .chef-btn.active { background: var(--shop-pink); color: white; transform: scale(1.05); }
 
-        .chef-btn.active {
-            background: var(--shop-pink);
-            color: var(--shop-white);
-            border-color: var(--text-dark);
-            box-shadow: 0 3px 0 var(--text-dark);
-            transform: translateY(-2px);
-        }
-
-        .action-controls {
+        .btn-visualize {
+            width: 100%; background: #60a5fa; color: white; border: 3px solid var(--text-dark);
+            padding: 0.8rem; border-radius: 15px; font-weight: 900; cursor: pointer;
+            margin-bottom: 1rem; box-shadow: 0 4px 0 var(--text-dark); transition: transform 0.1s, box-shadow 0.1s;
             flex: 0 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
         }
+        .btn-visualize:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 var(--text-dark); }
+        .btn-visualize:disabled { background: #cbd5e1; cursor: not-allowed; }
 
-        .take-pic-btn, .restart-btn {
+        #generated-image-container {
+            width: 100%; aspect-ratio: 1; background: #eee; border-radius: 15px; 
+            margin-bottom: 1rem; display: none; overflow: hidden; border: 2px solid var(--text-dark);
+            flex: 0 0 auto;
+        }
+        #generated-image-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .btn-rebake {
+            background: var(--shop-yellow); color: var(--text-dark); border: 4px solid var(--text-dark);
+            padding: 1rem 2rem; font-size: 1.5rem; font-weight: 900; border-radius: 30px;
+            cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
+            transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 2px;
             width: 100%;
-            padding: 12px;
-            font-family: inherit;
-            font-weight: bold;
-            border: 3px solid var(--text-dark);
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: transform 0.1s;
+            flex: 0 0 auto;
         }
-
-        .take-pic-btn { background: var(--shop-yellow); box-shadow: 0 4px 0 var(--text-dark); }
-        .restart-btn { background: var(--shop-white); }
+        .btn-rebake:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--text-dark); }
         
-        .take-pic-btn:active, .restart-btn:active { transform: translateY(3px); box-shadow: none; }
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%; animation: shimmer 1.5s infinite;
+        }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body>
 
     <header id="header">
-        <h1>🍩 Dough Drop</h1>
+        <img src="dough-drop.png" alt="Dough Drop Icon" class="app-icon">
+        <h1>Dough Drop</h1>
     </header>
 
-    <div id="builder">
-        <div class="category-title">Base</div>
-        <div class="options-grid" id="grid-base">
-            <button class="opt-btn selected" onclick="selectOpt('base', 'Fluffy')">Fluffy</button>
-            <button class="opt-btn" onclick="selectOpt('base', 'Cake')">Cake</button>
+    <main id="builder">
+        <label class="section-label">🍩 BASE</label>
+        <div class="visual-grid">
+            <div class="visual-card active" onclick="selectType('Glazed', this)"><span>Fluffy</span></div>
+            <div class="visual-card" onclick="selectType('Cake', this)"><span>Cake</span></div>
         </div>
 
-        <div class="category-title">Frosting</div>
-        <div class="options-grid" id="grid-frosting">
-            <button class="opt-btn selected" onclick="selectOpt('frosting', 'Chocolate')">Chocolate</button>
-            <button class="opt-btn" onclick="selectOpt('frosting', 'Strawberry')">Strawberry</button>
-            <button class="opt-btn" onclick="selectOpt('frosting', 'Vanilla')">Vanilla</button>
-            <button class="opt-btn" onclick="selectOpt('frosting', 'Maple')">Maple</button>
+        <div id="cake-options" style="display: none;">
+            <label class="section-label">🍰 Cake Flavor</label>
+            <div class="visual-grid">
+                <div class="visual-card active" onclick="selectFlavor('Vanilla', this)"><span>Vanilla</span></div>
+                <div class="visual-card" onclick="selectFlavor('Chocolate', this)"><span>Chocolate</span></div>
+            </div>
         </div>
 
-        <div class="category-title">Toppings (Max 2)</div>
-        <div class="options-grid" id="grid-toppings">
-            <button class="opt-btn" onclick="toggleTopping('Sprinkles')">Sprinkles</button>
-            <button class="opt-btn" onclick="toggleTopping('Chocolate Chips')">Choc Chips</button>
-            <button class="opt-btn" onclick="toggleTopping('Bacon')">Bacon</button>
-            <button class="opt-btn" onclick="toggleTopping('Coconut')">Coconut</button>
+        <label class="section-label">🎨 FROSTING</label>
+        <div class="glaze-row">
+            <div class="glaze-drip-ui" style="background:#4a2c2a;" onclick="selectGlaze('Chocolate', this, '#4a2c2a')">
+                <span style="font-size:1.8rem;" title="Chocolate">🍫</span>
+            </div>
+            <div class="glaze-drip-ui" style="background:#ff6b9e;" onclick="selectGlaze('Strawberry', this, '#ff6b9e')">
+                <span style="font-size:1.8rem;" title="Strawberry">🍓</span>
+            </div>
+            <div class="glaze-drip-ui" style="background:#c68642;" onclick="selectGlaze('Maple', this, '#c68642')">
+                <span style="font-size:1.8rem;" title="Maple">🍁</span>
+            </div>
+            <div class="glaze-drip-ui active" style="background:#fdf5e6;" onclick="selectGlaze('Vanilla', this, '#fdf5e6')">
+                <span style="font-size:1.8rem;" title="Vanilla">🍦</span>
+            </div>
         </div>
 
-        <button class="bake-btn" onclick="startReview()">Bake & Review!</button>
-    </div>
+        <label class="section-label">✨ Toppings</label>
+        <div class="topping-grid" id="topping-container"></div>
+
+        <label class="section-label">⚖️ Topping Load: <span id="qty-label">400</span></label>
+        <input type="range" min="0" max="1000" value="400" class="slider" id="topping-qty" oninput="document.getElementById('qty-label').innerText = this.value">
+
+        <button class="btn-primary" id="btn-submit" onclick="startReview()">Bake & Review!</button>
+    </main>
 
     <div id="canvas-container"></div>
-
+    
     <div id="verdict-backdrop"></div>
+    
     <div id="verdict-container">
-        <div class="score-badge"><span id="score-display">-</span>/10</div>
+        <div class="score-badge" id="score-display">?</div>
         
-        <!-- FIX 1: Inner Scrollable Area -->
+        <!-- Scaffolding wrapper keeps things from overflowing bounds or clipping absolute items -->
         <div class="verdict-scroll-area">
-            <div id="verdict-text"><i>Tasting your creation...</i></div>
-            <div id="ai-image-container"></div>
-        </div>
+            <h2 id="chef-title">Gordon Ramsay Says:</h2>
+            <div id="verdict-text">Consulting the culinary gods...</div>
 
-        <!-- FIX 2: Responsive Flex-wrap Buttons -->
-        <div class="chef-controls">
-            <button id="btn-gordon" class="chef-btn active" onclick="switchChef('gordon')">Gordon</button>
-            <button id="btn-jacques" class="chef-btn" onclick="switchChef('jacques')">Jacques</button>
-            <button id="btn-guy" class="chef-btn" onclick="switchChef('guy')">Guy</button>
-        </div>
+            <button class="btn-visualize" id="btn-visualize" onclick="generateDonutImage()">📸 TAKE A PICTURE</button>
+            <div id="generated-image-container"></div>
 
-        <div class="action-controls">
-            <button class="take-pic-btn" onclick="takePicture()">📸 Take a Picture</button>
-            <button class="restart-btn" onclick="location.reload()">Bake Another</button>
+            <div class="chef-switcher" id="chef-switcher">
+                <button class="chef-btn" id="btn-jacques" onclick="switchChef('Jacques')">JACQUES</button>
+                <button class="chef-btn" id="btn-fieri" onclick="switchChef('Fieri')">GUY FIERI</button>
+                <button class="chef-btn active" id="btn-gordon" onclick="switchChef('Gordon')">GORDON</button>
+            </div>
+
+            <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">REBAKE!</button>
         </div>
     </div>
 
     <script>
-        // --- State Management ---
-        const state = {
-            base: 'Fluffy',
-            frosting: 'Chocolate',
-            toppings: [],
-            currentChef: 'gordon',
-            reviews: {} // Cache: { chefKey: { critique: "", score: 0 } }
+        const apiKey = "";
+        let state = { 
+            type: "Glazed", 
+            flavor: "Vanilla", 
+            glaze: "Vanilla", 
+            glazeHex: "#fdf5e6", 
+            selectedToppings: [],
+            currentChef: 'Gordon',
+            reviews: {} 
         };
 
         const chefs = {
-            gordon: { name: "Gordon Ramsay", role: "Angry Chef" },
-            jacques: { name: "Jacques", role: "Harsh French Food Critic" },
-            guy: { name: "Guy Fieri", role: "Mayor of Flavortown" }
+            Jacques: {
+                title: "Jacques Says:",
+                system: "You are Jacques, a world-class, extremely snooty French pastry critic. You are judging a donut. Be witty, slightly mean but fair, and very detailed about the flavor profile. Focus on the lack of 'finesse'. Keep your critique strictly to 2 or 3 short sentences. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+            },
+            Fieri: {
+                title: "Guy Fieri Says:",
+                system: "You are Guy Fieri. You are judging a donut for Diners, Drive-Ins and Dives. Use lots of slang like 'Right on', 'Out of bounds', 'Funkalicious', and 'Flavor Town'. You love big flavors and don't care about health. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+            },
+            Gordon: {
+                title: "Gordon Ramsay Says:",
+                system: "You are Gordon Ramsay. You are judging a donut. You are incredibly aggressive, loud, and use creative culinary insults. If it's bad, it's 'RAW' or 'A DISASTER'. If it's good, it's 'STUNNING'. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+            }
         };
 
-        // --- UI Logic ---
-        function selectOpt(category, value) {
-            state[category] = value;
-            const btns = document.querySelectorAll(`#grid-${category} .opt-btn`);
-            btns.forEach(btn => btn.classList.remove('selected'));
-            event.target.classList.add('selected');
+        const toppingsData = [
+            { name: "Rainbow Sprinkles", icon: "🌈", colors: [0xFF69B4, 0x00FF00, 0x00BFFF, 0xFFFF00], type: 'cylinder' },
+            { name: "Bacon Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
+            { name: "Chili Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
+            { name: "Crushed Takis", icon: "🌪️", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
+            { name: "Cap'n Crunch", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
+            { name: "Mini Choc Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
+        ];
+
+        const tc = document.getElementById('topping-container');
+        toppingsData.forEach(t => {
+            const item = document.createElement('div');
+            item.className = 'topping-item';
+            item.innerHTML = `<span style="font-size:1.5rem">${t.icon}</span><span style="font-size:0.85rem">${t.name}</span>`;
+            item.onclick = () => {
+                item.classList.toggle('active');
+                const idx = state.selectedToppings.indexOf(t);
+                if(idx > -1) state.selectedToppings.splice(idx, 1);
+                else state.selectedToppings.push(t);
+            };
+            tc.appendChild(item);
+        });
+
+        function selectType(t, el) { 
+            el.parentElement.querySelectorAll('.visual-card').forEach(c=>c.classList.remove('active'));
+            el.classList.add('active'); state.type = t; 
+            const cakeOptions = document.getElementById('cake-options');
+            if (cakeOptions) {
+                if (t === 'Cake') cakeOptions.style.display = 'block';
+                else cakeOptions.style.display = 'none';
+            }
+        }
+        function selectFlavor(f, el) { 
+            el.parentElement.querySelectorAll('.visual-card').forEach(c=>c.classList.remove('active'));
+            el.classList.add('active'); state.flavor = f; 
+        }
+        function selectGlaze(n, el, h) { 
+            document.querySelectorAll('.glaze-drip-ui').forEach(s=>s.classList.remove('active'));
+            el.classList.add('active'); state.glaze = n; state.glazeHex = h; 
         }
 
-        function toggleTopping(value) {
-            const btn = event.target;
-            const index = state.toppings.indexOf(value);
+        async function switchChef(chefKey) {
+            state.currentChef = chefKey;
+            document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${chefKey.toLowerCase()}`).classList.add('active');
+            document.getElementById('chef-title').innerText = chefs[chefKey].title;
             
-            if (index > -1) {
-                state.toppings.splice(index, 1);
-                btn.classList.remove('selected');
+            if (state.reviews[chefKey]) {
+                displayReview(state.reviews[chefKey]);
             } else {
-                if (state.toppings.length < 2) {
-                    state.toppings.push(value);
-                    btn.classList.add('selected');
-                }
+                document.getElementById('verdict-text').innerText = "Consulting the culinary gods...";
+                const review = await getChefReview(chefKey);
+                state.reviews[chefKey] = review;
+                displayReview(review);
             }
         }
 
-        // --- API Integration (Proxy Preserved) ---
-        async function getChefReview(chefKey) {
-            if (state.reviews[chefKey]) return state.reviews[chefKey];
+        function displayReview(review) {
+            document.getElementById('score-display').innerText = review.score;
+            document.getElementById('verdict-text').innerHTML = review.critique;
+        }
 
-            const chefData = chefs[chefKey];
-            const toppingsStr = state.toppings.length > 0 ? state.toppings.join(' and ') : 'no toppings';
-            const prompt = `You are ${chefData.name}, acting as a ${chefData.role}. Critique a donut made with a ${state.base} base, ${state.frosting} frosting, and ${toppingsStr}. Be highly in character, very animated, and brief (3-4 sentences max). End your response with a JSON object containing {"critique": "your review html", "score": number between 1 and 10}. Format the review with basic HTML tags like <b> or <i> for emphasis if needed.`;
+        async function getChefReview(chefKey) {
+            const isEasterEgg = state.type === 'Cake' && state.flavor === 'Vanilla' && state.glaze === 'Strawberry' && state.selectedToppings.length === 1 && state.selectedToppings[0].name === 'Rainbow Sprinkles';
+            
+            if (isEasterEgg && chefKey === 'Jacques') {
+                return {
+                    critique: "Mon Dieu... *wipes away a single tear*. I wanted to despise it. It is so pedestrian, so profoundly un-French. But the dense crumb... the unapologetic pink sweetness... the joyful crunch of the rainbow sprinkles... I surrender! It transcends critique! It is an AMERICAN CLASSIC!!",
+                    score: 11
+                };
+            }
+
+            const userQuery = `Critique this pastry: A ${state.type} donut (${state.type === 'Cake' ? state.flavor : 'Yeast'}) with ${state.glaze} glaze and the following toppings: ${state.selectedToppings.map(t => t.name).join(', ') || 'None'}. Return JSON format: {"critique": "your text here", "score": 8.5}`;
+            
+            try {
+                const response = await fetch(`/.netlify/functions/api`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: 'review',
+                        query: userQuery,
+                        system: chefs[chefKey].system
+                    })
+                });
+                
+                if (!response.ok) {
+                    const err = await response.text();
+                    return { critique: `Proxy Error (${response.status}): ${err}`, score: 0 };
+                }
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    return { critique: `Google API Error: ${data.error.message || "Unknown"}`, score: 0 };
+                }
+                
+                let rawText = data.candidates[0].content.parts[0].text;
+                rawText = rawText.replace(/```json/g, '').replace(/```/g, ''); 
+                return JSON.parse(rawText);
+            } catch (e) {
+                return { critique: `Connection Failed: ${e.message}`, score: 0 };
+            }
+        }
+
+        async function generateDonutImage() {
+            const btn = document.getElementById('btn-visualize');
+            const imgContainer = document.getElementById('generated-image-container');
+            const scrollArea = document.querySelector('.verdict-scroll-area');
+            
+            btn.disabled = true;
+            btn.innerText = "PHOTOGRAPHING...";
+            imgContainer.style.display = 'block';
+            imgContainer.className = 'loading-shimmer';
+            imgContainer.innerHTML = '';
+            
+            // Scroll down to ensure loading UI is visible
+            setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 50);
+
+            const prompt = `A professional food photography macro shot of a ${state.type} donut (${state.flavor}) with thick ${state.glaze} glaze and ${state.selectedToppings.map(t => t.name).join(', ') || 'no toppings'}. High detail, soft bakery lighting, 8k resolution.`;
 
             try {
-                // Rule: Route through local proxy
-                const response = await fetch('/.netlify/functions/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: prompt })
-                });
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error("API Error:", error);
-                return { critique: "<b>Disaster!</b> The kitchen proxy caught on fire! (Network Error)", score: 0 };
+                const encodedPrompt = encodeURIComponent(prompt);
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`;
+
+                const img = new Image();
+                img.onload = () => {
+                    imgContainer.classList.remove('loading-shimmer');
+                    imgContainer.innerHTML = '';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    img.style.objectFit = 'cover';
+                    imgContainer.appendChild(img);
+                    btn.style.display = 'none'; 
+                    // Scroll down again once image loads
+                    setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 50);
+                };
+                img.onerror = () => { throw new Error("Failed to develop the photo."); };
+                img.src = imageUrl;
+
+            } catch (e) {
+                console.error(e);
+                imgContainer.innerHTML = `<div style='padding:20px; text-align:center; color:#dc2626; font-weight:bold; font-size: 0.9rem;'>Camera Error:<br><br>${e.message}</div>`;
+                btn.disabled = false;
+                btn.innerText = "TRY AGAIN";
             }
         }
 
-        function switchChef(chefKey) {
-            state.currentChef = chefKey;
-            
-            document.querySelectorAll('.chef-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`btn-${chefKey}`).classList.add('active');
-            
-            document.getElementById('verdict-text').innerHTML = `<i>${chefs[chefKey].name} is tasting...</i>`;
-            
-            getChefReview(chefKey).then(review => {
-                state.reviews[chefKey] = review;
-                document.getElementById('score-display').innerText = review.score;
-                document.getElementById('verdict-text').innerHTML = review.critique;
+        let scene, camera, renderer, donutGroup, frostingGroup, rackGroup, sharedFrostingMat;
+
+        function createRack() {
+            const group = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: 0xaaaaaa, metalness: 0.8, roughness: 0.2 });
+            const wireRadius = 0.04;
+            for(let i = -8; i <= 8; i++) {
+                const geoH = new THREE.CylinderGeometry(wireRadius, wireRadius, 16, 8);
+                const wireH = new THREE.Mesh(geoH, mat);
+                wireH.rotation.z = Math.PI / 2; wireH.position.z = i * 0.7;
+                wireH.castShadow = true; wireH.receiveShadow = true;
+                group.add(wireH);
+                const geoV = new THREE.CylinderGeometry(wireRadius, wireRadius, 16, 8);
+                const wireV = new THREE.Mesh(geoV, mat);
+                wireV.rotation.x = Math.PI / 2; wireV.position.x = i * 0.7; wireV.position.y = -wireRadius * 2; 
+                wireV.castShadow = true; wireV.receiveShadow = true;
+                group.add(wireV);
+            }
+            group.position.y = -1.45; 
+            return group;
+        }
+
+        function createGlaze(isCake, donutR, tubeR) {
+            const group = new THREE.Group();
+            sharedFrostingMat = new THREE.MeshStandardMaterial({ 
+                color: state.glazeHex, roughness: 0.1, metalness: 0.0, transparent: true, opacity: 0, side: THREE.DoubleSide
             });
-        }
+            const points = [];
+            const segments = 32;
+            const startAngle = isCake ? -Math.PI * 0.4 : -Math.PI * 0.5;
+            const endAngle = isCake ? Math.PI * 0.45 : Math.PI * 0.55;
+            for (let i = 0; i <= segments; i++) {
+                const angle = startAngle + (i / segments) * (endAngle - startAngle); 
+                const x = donutR + Math.sin(angle) * tubeR;
+                const y = Math.cos(angle) * tubeR;
+                points.push(new THREE.Vector2(x, y));
+            }
+            const topGeo = new THREE.LatheGeometry(points, 64);
+            const topMesh = new THREE.Mesh(topGeo, sharedFrostingMat);
+            topMesh.castShadow = true; topMesh.receiveShadow = true;
+            group.add(topMesh);
 
-        function takePicture() {
-            const container = document.getElementById('ai-image-container');
-            container.innerHTML = '<i><br/>Generating photorealistic masterpiece... 📸</i>';
-            
-            const toppingsStr = state.toppings.length > 0 ? state.toppings.join(' and ') : 'no toppings';
-            const prompt = `A highly detailed, photorealistic 3D render of a single delicious donut with a ${state.base} base, ${state.frosting} frosting, and ${toppingsStr}. Bright pop art style, studio lighting, simple colorful pastel background.`;
-            
-            // Rule: Keyless direct endpoint
-            const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=400&height=400&nologo=true`;
-            
-            const img = new Image();
-            img.src = imgUrl;
-            img.style.width = '100%';
-            img.style.borderRadius = '15px';
-            img.style.marginTop = '15px';
-            img.style.border = '3px solid var(--text-dark)';
-            
-            img.onload = () => {
-                container.innerHTML = '';
-                container.appendChild(img);
-                // Scroll to the bottom to reveal the new image
-                const scrollArea = document.querySelector('.verdict-scroll-area');
-                scrollArea.scrollTop = scrollArea.scrollHeight;
-            };
+            const dripCountOuter = isCake ? 16 : 8;
+            const outerAngle = endAngle - 0.05; 
+            const oEdgeX = donutR + Math.sin(outerAngle) * tubeR;
+            const oEdgeY = Math.cos(outerAngle) * tubeR;
+            for(let i = 0; i < dripCountOuter; i++) {
+                const angle = (i / dripCountOuter) * Math.PI * 2;
+                const dripLen = isCake ? (0.6 + Math.random() * 1.2) : (0.3 + Math.random() * 0.5);
+                const dripContainer = new THREE.Group();
+                const bodyGeo = new THREE.CylinderGeometry(0.2, 0.1, dripLen, 12);
+                bodyGeo.translate(0, -dripLen/2, 0); 
+                const body = new THREE.Mesh(bodyGeo, sharedFrostingMat);
+                dripContainer.add(body);
+                const capGeo = new THREE.SphereGeometry(0.1, 12, 12);
+                const cap = new THREE.Mesh(capGeo, sharedFrostingMat);
+                cap.position.y = -dripLen; dripContainer.add(cap);
+                dripContainer.position.set(Math.cos(angle) * oEdgeX, oEdgeY, Math.sin(angle) * oEdgeX);
+                group.add(dripContainer);
+            }
+            return group;
         }
-
-        // --- Three.js Setup (Simplified Placeholder logic for drop) ---
-        let scene, camera, renderer, donut;
 
         function init3D() {
             const container = document.getElementById('canvas-container');
+            container.innerHTML = '';
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 1000);
             
-            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000000, 0); 
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
-
-            const light = new THREE.PointLight(0xffffff, 1, 100);
-            light.position.set(10, 10, 10);
-            scene.add(light);
-            scene.add(new THREE.AmbientLight(0x404040));
-
-            // Basic Donut shape based on base choice
-            const geometry = new THREE.TorusGeometry(2, 0.8, 16, 100);
-            const material = new THREE.MeshPhongMaterial({ 
-                color: state.base === 'Cake' ? 0xddb377 : 0xf5d6a1 
-            });
-            donut = new THREE.Mesh(geometry, material);
             
-            // Start high up for the drop
-            donut.position.y = 10;
-            scene.add(donut);
+            window.addEventListener('resize', () => {
+                if(camera && renderer) {
+                    camera.aspect = window.innerWidth / window.innerHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }
+            });
 
-            camera.position.z = 8;
+            const floorGeo = new THREE.PlaneGeometry(100, 100);
+            const floorMat = new THREE.ShadowMaterial({ opacity: 0.15 });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2; floor.position.y = -1.8; floor.receiveShadow = true;
+            scene.add(floor);
+            
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            keyLight.position.set(5, 15, 8);
+            keyLight.castShadow = true;
+            keyLight.shadow.mapSize.width = 1024;
+            keyLight.shadow.mapSize.height = 1024;
+            scene.add(keyLight);
+            const fillLight = new THREE.PointLight(0xffffff, 0.3);
+            fillLight.position.set(-6, 4, -4);
+            scene.add(fillLight);
+            
+            donutGroup = new THREE.Group();
+            scene.add(donutGroup);
+            rackGroup = createRack();
+            scene.add(rackGroup);
+            
+            const isCake = state.type === 'Cake';
+            const donutR = isCake ? 2.4 : 2.9;
+            const tubeR = isCake ? 1.35 : 1.15;
+            const glazeTubeR = isCake ? 1.42 : 1.20;
+            const cakeColor = (isCake && state.flavor === 'Chocolate') ? 0x2a140c : 0xc48035;
+            
+            const cakeGeo = new THREE.TorusGeometry(donutR, tubeR, 64, 100);
+            const cakeMat = new THREE.MeshStandardMaterial({ color: cakeColor, roughness: 1.0 });
+            const cake = new THREE.Mesh(cakeGeo, cakeMat);
+            cake.rotation.x = Math.PI/2;
+            cake.castShadow = true; cake.receiveShadow = true;
+            donutGroup.add(cake);
+            
+            frostingGroup = createGlaze(isCake, donutR, glazeTubeR);
+            donutGroup.add(frostingGroup);
+            donutGroup.userData = { donutR, tubeR: glazeTubeR };
+            donutGroup.position.y = 15;
+            camera.position.set(0, 12, 22);
+            camera.lookAt(0, -1, 0);
         }
 
-        function animatePastry() {
+        async function animatePastry() {
+            let phase = 'drop';
+            const targetQty = parseInt(document.getElementById('topping-qty').value);
+            const sprinkles = [];
+            
+            let currentToppingIndex = 0;
+            const numToppingTypes = state.selectedToppings.length;
+            const qtyPerTopping = numToppingTypes > 0 ? Math.ceil(targetQty / numToppingTypes) : 0;
+            let currentToppingCount = 0;
+
             return new Promise(resolve => {
-                let frame = 0;
-                function animate() {
-                    if (frame > 100) {
+                function run() {
+                    donutGroup.rotation.y += 0.003;
+                    rackGroup.rotation.y += 0.003;
+                    
+                    if (phase === 'drop') {
+                        donutGroup.position.y -= 0.6;
+                        if (donutGroup.position.y <= 0) {
+                            donutGroup.position.y = 0; 
+                            donutGroup.scale.set(1.15, 0.7, 1.15); 
+                            phase = 'rebound';
+                        }
+                    } else if (phase === 'rebound') {
+                        donutGroup.scale.x += (1 - donutGroup.scale.x) * 0.15;
+                        donutGroup.scale.y += (1 - donutGroup.scale.y) * 0.15;
+                        if (Math.abs(1 - donutGroup.scale.y) < 0.01) { 
+                            donutGroup.scale.set(1, 1, 1); 
+                            phase = 'glaze'; 
+                        }
+                    } else if (phase === 'glaze') {
+                        if (sharedFrostingMat) {
+                            sharedFrostingMat.opacity += 0.04;
+                            if (sharedFrostingMat.opacity >= 1.0) {
+                                sharedFrostingMat.opacity = 1.0;
+                                phase = 'toppings';
+                            }
+                        } else { phase = 'toppings'; }
+                    } else if (phase === 'toppings') {
+                        if (state.selectedToppings.length === 0 || targetQty === 0) {
+                            phase = 'done';
+                        } else if (sprinkles.length < targetQty && currentToppingIndex < numToppingTypes) {
+                            for(let i=0; i<15; i++) {
+                                if(sprinkles.length >= targetQty) break;
+                                const topCfg = state.selectedToppings[currentToppingIndex];
+                                let geo;
+                                if (topCfg.type === 'cylinder') {
+                                    geo = new THREE.CylinderGeometry(0.04, 0.04, 0.35, 6);
+                                    geo.rotateX(Math.PI / 2);
+                                } else if (topCfg.type === 'flake') {
+                                    const s = 0.15 + Math.random()*0.1;
+                                    geo = new THREE.BoxGeometry(s, 0.02, s);
+                                } else if (topCfg.type === 'dust') {
+                                    const s = 0.06 + Math.random()*0.06;
+                                    geo = new THREE.BoxGeometry(s, s, s);
+                                } else if (topCfg.type === 'crunch') {
+                                    const s = 0.15 + Math.random() * 0.1;
+                                    geo = new THREE.BoxGeometry(s, s, s);
+                                } else if (topCfg.type === 'chip') {
+                                    const s = 0.08 + Math.random() * 0.04;
+                                    geo = new THREE.TetrahedronGeometry(s);
+                                } else {
+                                    geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+                                }
+                                
+                                const mat = new THREE.MeshPhongMaterial({ 
+                                    color: topCfg.colors[Math.floor(Math.random() * topCfg.colors.length)],
+                                    shininess: 30
+                                });
+                                const mesh = new THREE.Mesh(geo, mat);
+                                
+                                const angle = Math.random() * Math.PI * 2;
+                                const radius = donutGroup.userData.donutR + (Math.random() - 0.5) * donutGroup.userData.tubeR;
+                                
+                                mesh.position.x = Math.cos(angle) * radius;
+                                mesh.position.z = Math.sin(angle) * radius;
+                                mesh.position.y = 5 + Math.random() * 5; 
+                                
+                                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                                
+                                scene.add(mesh);
+                                sprinkles.push({ mesh, targetY: Math.random() * 0.4 + 0.2 });
+                            }
+                            currentToppingCount += 15;
+                            if (currentToppingCount >= qtyPerTopping) {
+                                currentToppingIndex++;
+                                currentToppingCount = 0;
+                            }
+                        } else {
+                            let allSettled = true;
+                            for (let i = 0; i < sprinkles.length; i++) {
+                                const sp = sprinkles[i];
+                                if (sp.mesh.position.y > sp.targetY) {
+                                    sp.mesh.position.y -= 0.3;
+                                    allSettled = false;
+                                }
+                            }
+                            if (allSettled) {
+                                phase = 'done';
+                            }
+                        }
+                    } else if (phase === 'done') {
                         resolve();
                         return;
                     }
-                    requestAnimationFrame(animate);
-                    
-                    // Drop physics dummy
-                    if (donut.position.y > 0) {
-                        donut.position.y -= 0.2;
-                    } else if (donut.position.y < 0) {
-                        donut.position.y = 0;
-                    }
 
-                    donut.rotation.x += 0.02;
-                    donut.rotation.y += 0.02;
                     renderer.render(scene, camera);
-                    frame++;
+                    requestAnimationFrame(run);
                 }
-                animate();
+                run();
             });
         }
 
-        // --- Transition Flow ---
         function startReview() {
             const builder = document.getElementById('builder');
             const canvasContainer = document.getElementById('canvas-container');
@@ -489,7 +741,6 @@
                     const vContainer = document.getElementById('verdict-container');
                     vBackdrop.style.display = 'block';
                     vContainer.style.display = 'flex';
-                    
                     setTimeout(() => {
                         vBackdrop.style.opacity = '1';
                         vContainer.classList.add('show');
@@ -497,15 +748,6 @@
                 });
             }, 400); 
         }
-
-        // Handle Resizing
-        window.addEventListener('resize', () => {
-            if (camera && renderer) {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            }
-        });
     </script>
 </body>
 </html>
