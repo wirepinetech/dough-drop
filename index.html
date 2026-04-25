@@ -642,63 +642,74 @@
                     } else if (phase === 'toppings') {
                         if (state.selectedToppings.length === 0 || targetQty === 0) {
                             phase = 'done';
-                        } else if (sprinkles.length < targetQty && currentToppingIndex < numToppingTypes) {
-                            for(let i=0; i<15; i++) {
-                                if(sprinkles.length >= targetQty) break;
-                                const topCfg = state.selectedToppings[currentToppingIndex];
-                                let geo;
-                                if (topCfg.type === 'cylinder') {
-                                    geo = new THREE.CylinderGeometry(0.04, 0.04, 0.35, 6);
-                                    geo.rotateX(Math.PI / 2);
-                                } else if (topCfg.type === 'flake') {
-                                    const s = 0.15 + Math.random()*0.1;
-                                    geo = new THREE.BoxGeometry(s, 0.02, s);
-                                } else if (topCfg.type === 'dust') {
-                                    const s = 0.06 + Math.random()*0.06;
-                                    geo = new THREE.BoxGeometry(s, s, s);
-                                } else if (topCfg.type === 'crunch') {
-                                    const s = 0.15 + Math.random() * 0.1;
-                                    geo = new THREE.BoxGeometry(s, s, s);
-                                } else if (topCfg.type === 'chip') {
-                                    const s = 0.08 + Math.random() * 0.04;
-                                    geo = new THREE.TetrahedronGeometry(s);
-                                } else {
-                                    geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-                                }
-                                
-                                const mat = new THREE.MeshPhongMaterial({ 
-                                    color: topCfg.colors[Math.floor(Math.random() * topCfg.colors.length)],
-                                    shininess: 30
-                                });
-                                const mesh = new THREE.Mesh(geo, mat);
-                                
-                                const angle = Math.random() * Math.PI * 2;
-                                const radius = donutGroup.userData.donutR + (Math.random() - 0.5) * donutGroup.userData.tubeR;
-                                
-                                mesh.position.x = Math.cos(angle) * radius;
-                                mesh.position.z = Math.sin(angle) * radius;
-                                mesh.position.y = 5 + Math.random() * 5; 
-                                
-                                mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-                                
-                                scene.add(mesh);
-                                sprinkles.push({ mesh, targetY: Math.random() * 0.4 + 0.2 });
-                            }
-                            currentToppingCount += 15;
-                            if (currentToppingCount >= qtyPerTopping) {
-                                currentToppingIndex++;
-                                currentToppingCount = 0;
-                            }
                         } else {
+                            // 1. Generate new sprinkles if we haven't reached the target
+                            if (sprinkles.length < targetQty && currentToppingIndex < numToppingTypes) {
+                                for(let i=0; i<15; i++) {
+                                    if(sprinkles.length >= targetQty) break;
+                                    const topCfg = state.selectedToppings[currentToppingIndex];
+                                    let geo;
+                                    if (topCfg.type === 'cylinder') {
+                                        geo = new THREE.CylinderGeometry(0.04, 0.04, 0.35, 6);
+                                        geo.rotateX(Math.PI / 2);
+                                    } else if (topCfg.type === 'flake') {
+                                        const s = 0.15 + Math.random()*0.1;
+                                        geo = new THREE.BoxGeometry(s, 0.02, s);
+                                    } else if (topCfg.type === 'dust') {
+                                        const s = 0.06 + Math.random()*0.06;
+                                        geo = new THREE.BoxGeometry(s, s, s);
+                                    } else if (topCfg.type === 'crunch') {
+                                        const s = 0.15 + Math.random() * 0.1;
+                                        geo = new THREE.BoxGeometry(s, s, s);
+                                    } else if (topCfg.type === 'chip') {
+                                        const s = 0.08 + Math.random() * 0.04;
+                                        geo = new THREE.TetrahedronGeometry(s);
+                                    } else {
+                                        geo = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+                                    }
+                                    
+                                    const mat = new THREE.MeshPhongMaterial({ 
+                                        color: topCfg.colors[Math.floor(Math.random() * topCfg.colors.length)],
+                                        shininess: 30
+                                    });
+                                    const mesh = new THREE.Mesh(geo, mat);
+                                    
+                                    const angle = Math.random() * Math.PI * 2;
+                                    const spread = (Math.random() - 0.5) * donutGroup.userData.tubeR;
+                                    const radius = donutGroup.userData.donutR + spread;
+                                    
+                                    mesh.position.x = Math.cos(angle) * radius;
+                                    mesh.position.z = Math.sin(angle) * radius;
+                                    mesh.position.y = 5 + Math.random() * 5; 
+                                    
+                                    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+                                    
+                                    scene.add(mesh);
+                                    
+                                    // Calculate exact landing height based on the curve of the torus
+                                    const surfaceY = Math.sqrt(Math.max(0, donutGroup.userData.tubeR * donutGroup.userData.tubeR - spread * spread));
+                                    sprinkles.push({ mesh, targetY: surfaceY + 0.05 });
+                                }
+                                currentToppingCount += 15;
+                                if (currentToppingCount >= qtyPerTopping) {
+                                    currentToppingIndex++;
+                                    currentToppingCount = 0;
+                                }
+                            }
+                            
+                            // 2. Animate ALL existing sprinkles down simultaneously
                             let allSettled = true;
                             for (let i = 0; i < sprinkles.length; i++) {
                                 const sp = sprinkles[i];
                                 if (sp.mesh.position.y > sp.targetY) {
-                                    sp.mesh.position.y -= 0.3;
+                                    sp.mesh.position.y -= 0.3; // Speed of the rain
                                     allSettled = false;
                                 }
                             }
-                            if (allSettled) {
+                            
+                            // 3. Move to the next phase only when generation AND falling are both complete
+                            const doneGenerating = sprinkles.length >= targetQty || currentToppingIndex >= numToppingTypes;
+                            if (doneGenerating && allSettled) {
                                 phase = 'done';
                             }
                         }
