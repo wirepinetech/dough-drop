@@ -329,12 +329,12 @@
         };
 
         const toppingsData = [
-            { name: "Rainbow Sprinkles", icon: "🌈", colors: [0xFF69B4, 0x00FF00, 0x00BFFF, 0xFFFF00], type: 'cylinder' },
-            { name: "Bacon Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
-            { name: "Chili Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
-            { name: "Crushed Takis", icon: "🌪️", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
-            { name: "Cap'n Crunch", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
-            { name: "Mini Choc Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
+            { name: "Sprinkles", icon: "🌈", colors: [0xFF69B4, 0x00FF00, 0x00BFFF, 0xFFFF00], type: 'cylinder' },
+            { name: "Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
+            { name: "Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
+            { name: "Takis", icon: "🌪️", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
+            { name: "Cap'n", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
+            { name: "Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
         ];
 
         const tc = document.getElementById('topping-container');
@@ -645,7 +645,10 @@
                         } else {
                             // 1. Generate new sprinkles if we haven't reached the target
                             if (sprinkles.length < targetQty && currentToppingIndex < numToppingTypes) {
-                                for(let i=0; i<15; i++) {
+                                const dropRate = Math.max(15, Math.floor(targetQty / 20));
+                                let addedThisFrame = 0;
+
+                                for(let i=0; i<dropRate; i++) {
                                     if(sprinkles.length >= targetQty) break;
                                     const topCfg = state.selectedToppings[currentToppingIndex];
                                     let geo;
@@ -674,8 +677,15 @@
                                     });
                                     const mesh = new THREE.Mesh(geo, mat);
                                     
+                                    // FIX 1: Scale up toppings at high quantities for a chunkier "buried" look
+                                    const sizeScale = 1 + (targetQty / 1000) * 0.5;
+                                    mesh.scale.set(sizeScale, sizeScale, sizeScale);
+                                    
                                     const angle = Math.random() * Math.PI * 2;
-                                    const spread = (Math.random() - 0.5) * donutGroup.userData.tubeR;
+                                    
+                                    // FIX 2: Widen the spread significantly at max slider to spill off sides/into the hole
+                                    const spreadMultiplier = 1.4 + (targetQty / 1000) * 1.6;
+                                    const spread = (Math.random() - 0.5) * spreadMultiplier * donutGroup.userData.tubeR;
                                     const radius = donutGroup.userData.donutR + spread;
                                     
                                     mesh.position.x = Math.cos(angle) * radius;
@@ -687,10 +697,27 @@
                                     scene.add(mesh);
                                     
                                     // Calculate exact landing height based on the curve of the torus
-                                    const surfaceY = Math.sqrt(Math.max(0, donutGroup.userData.tubeR * donutGroup.userData.tubeR - spread * spread));
-                                    sprinkles.push({ mesh, targetY: surfaceY + 0.05 });
+                                    let surfaceY;
+                                    if (Math.abs(spread) > donutGroup.userData.tubeR * 0.95) {
+                                        // Missed the frosting! Fall down to the cooling rack
+                                        surfaceY = -1.4;
+                                    } else {
+                                        surfaceY = Math.sqrt(Math.max(0, donutGroup.userData.tubeR * donutGroup.userData.tubeR - spread * spread));
+                                    }
+                                    
+                                    // Dynamic padding so thicker toppings don't half-clip into the frosting
+                                    let padding = 0.05;
+                                    if (topCfg.type === 'cylinder') padding = 0.12;
+                                    else if (topCfg.type === 'crunch' || topCfg.type === 'chip') padding = 0.08;
+                                    padding *= sizeScale;
+                                    
+                                    // FIX 3: Let them pile up vertically so it stacks thick!
+                                    const pileUpHeight = Math.random() * (targetQty / 1000) * 0.8;
+                                    
+                                    sprinkles.push({ mesh, targetY: surfaceY + padding + pileUpHeight });
+                                    addedThisFrame++;
                                 }
-                                currentToppingCount += 15;
+                                currentToppingCount += addedThisFrame;
                                 if (currentToppingCount >= qtyPerTopping) {
                                     currentToppingIndex++;
                                     currentToppingCount = 0;
@@ -703,7 +730,12 @@
                                 const sp = sprinkles[i];
                                 if (sp.mesh.position.y > sp.targetY) {
                                     sp.mesh.position.y -= 0.3; // Speed of the rain
-                                    allSettled = false;
+                                    // FIX 3: Snap to targetY so they never overshoot and bury themselves inside the 3D model
+                                    if (sp.mesh.position.y <= sp.targetY) {
+                                        sp.mesh.position.y = sp.targetY;
+                                    } else {
+                                        allSettled = false;
+                                    }
                                 }
                             }
                             
