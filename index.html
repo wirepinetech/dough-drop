@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dough Drop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
@@ -12,12 +14,23 @@
             --shop-white: #ffffff;
             --shop-cream: #fff9f0;
             --text-dark: #4a2c2a;
+            --purple: #5B2D8E;
+            --purple-mid: #7B45B8;
+        }
+
+        /* Low-poly background canvas */
+        #poly-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Comic Sans MS', "Chalkboard SE", "Marker Felt", sans-serif;
+            font-family: 'Nunito', 'Comic Sans MS', "Chalkboard SE", sans-serif;
             background-color: var(--shop-pink);
             background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.2) 1px, transparent 0);
             background-size: 40px 40px;
@@ -45,15 +58,17 @@
             width: 85px;
             height: 85px;
             border-radius: 22px;
-            border: 4px solid var(--text-dark);
-            box-shadow: 4px 4px 0 var(--text-dark);
+            border: 4px solid var(--purple);
+            box-shadow: 4px 4px 0 var(--purple);
             object-fit: cover;
         }
 
         h1 { 
-            font-size: 2.5rem; margin: 0; color: white; 
+            font-family: 'Boogaloo', 'Comic Sans MS', cursive;
+            font-size: 2.8rem; margin: 0; color: white; 
             text-shadow: 3px 3px 0px var(--text-dark);
             text-transform: uppercase;
+            letter-spacing: 4px;
         }
 
         #builder { 
@@ -69,8 +84,9 @@
         }
 
         .section-label {
-            font-size: 1rem; text-transform: uppercase; color: var(--text-dark);
-            margin: 1.5rem 0 0.75rem; font-weight: 900;
+            font-family: 'Boogaloo', cursive;
+            font-size: 1.05rem; text-transform: uppercase; color: var(--text-dark);
+            margin: 1.5rem 0 0.75rem; font-weight: 400; letter-spacing: 2px;
         }
 
         .visual-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -80,28 +96,128 @@
         }
         .visual-card.active { border-color: var(--shop-pink); background: #fff0f3; transform: scale(1.02); }
 
-        .glaze-row { display: flex; justify-content: space-between; gap: 10px; }
-        .glaze-drip-ui { flex: 1; height: 60px; cursor: pointer; border-radius: 10px; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; }
-        .glaze-drip-ui.active { border-color: var(--text-dark); transform: scale(1.1); }
-        .glaze-drip-ui span { color: white; font-size: 0.85rem; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-
-        .topping-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .topping-item {
-            background: white; border: 3px solid #e2e8f0; border-radius: 15px;
-            padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer;
+        /* Frosting: circular colour swatches */
+        .glaze-row { display: flex; justify-content: center; gap: 18px; }
+        .glaze-drip-ui {
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid var(--text-dark);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 3px 3px 0 var(--text-dark);
+            position: relative;
+            transition: transform 0.15s, box-shadow 0.15s;
+            flex-shrink: 0;
         }
-        .topping-item.active { border-color: var(--shop-pink); background: #fff0f3; }
+        .glaze-drip-ui::after {
+            content: '';
+            position: absolute; inset: -6px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            transition: border-color 0.15s;
+        }
+        .glaze-drip-ui.active {
+            transform: translate(-2px, -2px) scale(1.1);
+            box-shadow: 5px 5px 0 var(--text-dark);
+            border-width: 4px;
+        }
+        .glaze-drip-ui.active::after { border-color: var(--text-dark); }
+        .glaze-drip-ui:hover:not(.active) { transform: scale(1.07); }
+        .glaze-drip-ui span { font-size: 1.6rem; line-height: 1; }
 
-        .slider { width: 100%; height: 12px; margin: 15px 0; cursor: pointer; }
+        .topping-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+        .topping-item {
+            background: white; border: 2.5px solid #dde; border-radius: 50px;
+            padding: 9px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 700;
+            transition: all 0.15s cubic-bezier(0.2,0,0,1);
+        }
+        .topping-item.active {
+            background: var(--shop-pink);
+            border-color: var(--text-dark);
+            color: white;
+            box-shadow: 3px 3px 0 var(--text-dark);
+            transform: translate(-2px, -2px);
+        }
+        .topping-item:hover:not(.active) { border-color: var(--shop-pink); background: #fff0f8; }
+
+        /* Slider row: feather — slider — rock */
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0 4px;
+        }
+        .slider-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
+        .slider-label {
+            text-align: center;
+            font-family: 'Boogaloo', cursive;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: var(--purple);
+            margin-bottom: 0.3rem;
+        }
+        .slider-label span {
+            color: var(--text-dark);
+            background: #ede0fc;
+            border-radius: 6px;
+            padding: 1px 8px;
+            margin-left: 4px;
+            letter-spacing: 0;
+            font-size: 0.9rem;
+        }
+
+        /* Purple range input */
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%; height: 9px;
+            border-radius: 50px;
+            outline: none;
+            cursor: pointer;
+            border: none;
+            /* initial fill set by updateSlider() on load */
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--purple);
+            border: 3px solid #fff;
+            box-shadow: 0 2px 0 var(--text-dark), 0 0 0 2px var(--purple);
+            cursor: pointer;
+        }
+        .slider::-moz-range-thumb {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--purple);
+            border: 3px solid #fff;
+            box-shadow: 0 2px 0 var(--text-dark);
+            cursor: pointer;
+        }
 
         .btn-primary {
             width: 100%; background: #4ade80; color: var(--text-dark); border: 4px solid var(--text-dark);
-            padding: 1.25rem; font-size: 1.3rem; font-weight: 900; border-radius: 20px;
+            padding: 1.1rem; font-size: 1.5rem; font-weight: 400; border-radius: 50px;
             margin-top: 2rem; cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
-            transition: all 0.1s;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-family: 'Boogaloo', cursive;
+            letter-spacing: 3px;
         }
-        .btn-primary:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--text-dark); }
+        .btn-primary:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--text-dark); }
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        @keyframes roast-wiggle {
+            0%   { transform: rotate(0deg)   translateY(0); box-shadow: 0 6px 0 var(--text-dark); }
+            15%  { transform: rotate(-2deg)  translateY(-4px); }
+            35%  { transform: rotate(2.5deg) translateY(-5px); }
+            55%  { transform: rotate(-2deg)  translateY(-3px); }
+            75%  { transform: rotate(1.5deg) translateY(-2px); }
+            100% { transform: rotate(0deg)   translateY(0); box-shadow: 0 6px 0 var(--text-dark); }
+        }
+        .btn-primary.wiggling {
+            animation: roast-wiggle 0.45s ease-in-out;
+            pointer-events: none;
+        }
 
         /* CANVAS OVERLAY */
         #canvas-container {
@@ -165,45 +281,101 @@
             background: var(--shop-yellow);
             width: 100px; height: 100px; border: 6px solid var(--text-dark);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 2.2rem; font-weight: 900; transform: rotate(10deg);
-            box-shadow: 5px 5px 0 rgba(0,0,0,0.1);
+            font-family: 'Boogaloo', cursive;
+            font-size: 2.4rem; font-weight: 400; transform: rotate(10deg);
+            box-shadow: 5px 5px 0 var(--purple);
             z-index: 25; 
         }
 
-        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.4rem; }
+        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.3rem; font-family: 'Boogaloo', cursive; letter-spacing: 2px; }
         
         #verdict-text {
-            font-family: serif; font-size: 1.15rem; line-height: 1.5; text-align: center;
+            font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700; line-height: 1.55; text-align: center;
             margin-bottom: 1.5rem; color: #333; min-height: 80px;
         }
 
         /* FIX 2: Responsive Chef Buttons */
         .chef-switcher {
             display: flex; 
-            flex-wrap: wrap; /* Allows buttons to stack smoothly */
+            flex-wrap: wrap;
             justify-content: center; 
             gap: 8px; 
-            margin-bottom: 1.5rem; 
+            margin-bottom: 1rem; 
             width: 100%;
-            flex: 0 0 auto; /* Prevents switcher from squishing inside flex column */
+            flex: 0 0 auto;
         }
 
         .chef-btn {
             flex: 1 1 calc(33.333% - 8px); 
-            min-width: 80px; /* Stops buttons from shrinking to unreadable sizes */
-            padding: 0.6rem; border: 3px solid var(--text-dark); border-radius: 12px;
-            font-size: 0.75rem; font-weight: 900; cursor: pointer; background: white; transition: 0.2s;
+            min-width: 80px;
+            padding: 0.5rem 0.3rem 0.4rem;
+            border: 3px solid var(--text-dark);
+            border-radius: 12px;
+            font-size: 0.72rem; font-weight: 800;
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            line-height: 1;
+            font-family: 'Nunito', sans-serif;
+            letter-spacing: 0.5px;
         }
-        .chef-btn.active { background: var(--shop-pink); color: white; transform: scale(1.05); }
+        .chef-btn .chef-icon { font-size: 1.3rem; }
 
-        .btn-visualize {
-            width: 100%; background: #60a5fa; color: white; border: 3px solid var(--text-dark);
-            padding: 0.8rem; border-radius: 15px; font-weight: 900; cursor: pointer;
-            margin-bottom: 1rem; box-shadow: 0 4px 0 var(--text-dark); transition: transform 0.1s, box-shadow 0.1s;
-            flex: 0 0 auto;
+        /* Per-chef brand colours */
+        .chef-btn[data-chef="Jacques"] { border-color: #1A3F8A; color: #1A3F8A; }
+        .chef-btn[data-chef="Fieri"]   { border-color: #C84800; color: #C84800; }
+        .chef-btn[data-chef="Gordon"]  { border-color: #990000; color: #990000; }
+
+        .chef-btn[data-chef="Jacques"].active { background:#1A3F8A; color:#fff; box-shadow:2px 2px 0 var(--text-dark); transform:translate(-1px,-1px); }
+        .chef-btn[data-chef="Fieri"].active   { background:#C84800; color:#fff; box-shadow:2px 2px 0 var(--text-dark); transform:translate(-1px,-1px); }
+        .chef-btn[data-chef="Gordon"].active  { background:#990000; color:#fff; box-shadow:2px 2px 0 var(--text-dark); transform:translate(-1px,-1px); }
+
+        /* FRESH / FAIL ribbon */
+        .verdict-ribbon {
+            position: absolute;
+            top: 18px;
+            font-family: 'Comic Sans MS', "Chalkboard SE", "Marker Felt", sans-serif;
+            font-size: 10px; font-weight: 900; letter-spacing: 1.5px;
+            padding: 3px 12px;
+            border: 2px solid var(--text-dark);
+            border-radius: 4px;
+            box-shadow: 2px 2px 0 var(--text-dark);
+            display: none;
+            z-index: 30;
         }
-        .btn-visualize:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 0 0 var(--text-dark); }
-        .btn-visualize:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .verdict-ribbon.fresh {
+            right: 12px;
+            background: var(--shop-yellow);
+            color: var(--text-dark);
+            transform: rotate(3deg);
+        }
+        .verdict-ribbon.fail {
+            left: 12px;
+            background: #dc2626;
+            color: white;
+            transform: rotate(-3deg);
+        }
+
+        /* Tiny camera easter egg */
+        .btn-camera-egg {
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            opacity: 0.25;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 8px;
+            transition: opacity 0.2s;
+            flex: 0 0 auto;
+            margin-top: 4px;
+        }
+        .btn-camera-egg:hover { opacity: 0.65; }
+
+        
 
         #generated-image-container {
             width: 100%; aspect-ratio: 1; background: #eee; border-radius: 15px; 
@@ -214,11 +386,11 @@
 
         .btn-rebake {
             background: var(--shop-yellow); color: var(--text-dark); border: 4px solid var(--text-dark);
-            padding: 1rem 2rem; font-size: 1.5rem; font-weight: 900; border-radius: 30px;
+            padding: 1rem 2rem; font-size: 1.6rem; font-weight: 400; border-radius: 30px;
             cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
-            transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 2px;
-            width: 100%;
-            flex: 0 0 auto;
+            transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 3px;
+            width: 100%; flex: 0 0 auto;
+            font-family: 'Boogaloo', cursive;
         }
         .btn-rebake:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--text-dark); }
         
@@ -231,6 +403,9 @@
 </head>
 <body>
 
+    <!-- Low-poly background: pink + purple triangles at edges -->
+    <canvas id="poly-bg"></canvas>
+
     <header id="header">
         <img src="dough-drop.png" alt="Dough Drop Icon" class="app-icon">
         <h1>Dough Drop</h1>
@@ -239,7 +414,7 @@
     <main id="builder">
         <label class="section-label">🍩 BASE</label>
         <div class="visual-grid">
-            <div class="visual-card active" onclick="selectType('Glazed', this)"><span>Fluffy</span></div>
+            <div class="visual-card active" onclick="selectType('Fluffy', this)"><span>Fluffy</span></div>
             <div class="visual-card" onclick="selectType('Cake', this)"><span>Cake</span></div>
         </div>
 
@@ -270,10 +445,14 @@
         <label class="section-label">✨ Toppings</label>
         <div class="topping-grid" id="topping-container"></div>
 
-        <label class="section-label">⚖️ Topping Load: <span id="qty-label">400</span></label>
-        <input type="range" min="0" max="1000" value="400" class="slider" id="topping-qty" oninput="document.getElementById('qty-label').innerText = this.value">
+        <div class="slider-row">
+            <span class="slider-icon">🪶</span>
+            <input type="range" min="0" max="1000" value="400" class="slider" id="topping-qty" oninput="updateSlider(this)">
+            <span class="slider-icon">🪨</span>
+        </div>
+        <div class="slider-label">LOAD<span id="qty-label">400</span></div>
 
-        <button class="btn-primary" id="btn-submit" onclick="startReview()">Bake & Review!</button>
+        <button class="btn-primary" id="btn-submit" onclick="startReview()">ROAST! 🔥</button>
     </main>
 
     <div id="canvas-container"></div>
@@ -282,29 +461,106 @@
     
     <div id="verdict-container">
         <div class="score-badge" id="score-display">?</div>
+        <div class="verdict-ribbon" id="verdict-ribbon"></div>
         
         <!-- Scaffolding wrapper keeps things from overflowing bounds or clipping absolute items -->
         <div class="verdict-scroll-area">
             <h2 id="chef-title">Gordon Ramsay Says:</h2>
             <div id="verdict-text">Consulting the culinary gods...</div>
 
-            <button class="btn-visualize" id="btn-visualize" onclick="generateDonutImage()">📸 TAKE A PICTURE</button>
-            <div id="generated-image-container"></div>
-
             <div class="chef-switcher" id="chef-switcher">
-                <button class="chef-btn" id="btn-jacques" onclick="switchChef('Jacques')">JACQUES</button>
-                <button class="chef-btn" id="btn-fieri" onclick="switchChef('Fieri')">GUY FIERI</button>
-                <button class="chef-btn active" id="btn-gordon" onclick="switchChef('Gordon')">GORDON</button>
+                <button class="chef-btn" data-chef="Jacques" id="btn-jacques" onclick="switchChef('Jacques')">
+                    <span class="chef-icon">🎩</span>JACQUES
+                </button>
+                <button class="chef-btn" data-chef="Fieri" id="btn-fieri" onclick="switchChef('Fieri')">
+                    <span class="chef-icon">🔥</span>GUY
+                </button>
+                <button class="chef-btn active" data-chef="Gordon" id="btn-gordon" onclick="switchChef('Gordon')">
+                    <span class="chef-icon">⭐</span>GORDON
+                </button>
             </div>
 
-            <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">REBAKE!</button>
+            <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">🔄 REROAST!</button>
+
+            <!-- Easter egg: barely visible camera at the very bottom -->
+            <button class="btn-camera-egg" id="btn-visualize" onclick="generateDonutImage()" title="shhh">📸</button>
+            <div id="generated-image-container"></div>
         </div>
     </div>
 
     <script>
+        // ── LOW-POLY BACKGROUND ─────────────────────────────────────────────────
+        (function() {
+            const canvas = document.getElementById('poly-bg');
+            function draw() {
+                canvas.width  = window.innerWidth;
+                canvas.height = window.innerHeight;
+                const W = canvas.width, H = canvas.height;
+                const ctx = canvas.getContext('2d');
+
+                // Seeded PRNG (xorshift32) — same triangles every paint
+                let seed = 0xD06EB4FF;
+                const rng = () => {
+                    seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5;
+                    return (seed >>> 0) / 0xFFFFFFFF;
+                };
+
+                const COLS = 9, ROWS = 16;
+                const cw = W / COLS, ch = H / ROWS;
+                const pts = [];
+                for (let r = 0; r <= ROWS; r++) {
+                    for (let c = 0; c <= COLS; c++) {
+                        const edge = (c===0||c===COLS||r===0||r===ROWS);
+                        pts.push({
+                            x: Math.max(0,Math.min(W, c*cw + (edge?0:(rng()-.5)*cw*.72))),
+                            y: Math.max(0,Math.min(H, r*ch + (edge?0:(rng()-.5)*ch*.72)))
+                        });
+                    }
+                }
+
+                function tri(a, b, c2) {
+                    const cx=(a.x+b.x+c2.x)/3, cy=(a.y+b.y+c2.y)/3;
+                    const d = Math.min(cx, W-cx, cy, H-cy);
+                    const threshold = Math.min(W,H) * 0.27;
+                    if (d > threshold) return;
+                    const alpha = (1 - d/threshold) * 0.52;
+                    // Purple near corners, pink elsewhere in the edge zone
+                    const cornerDist = Math.min(
+                        Math.hypot(cx,cy), Math.hypot(W-cx,cy),
+                        Math.hypot(cx,H-cy), Math.hypot(W-cx,H-cy)
+                    );
+                    const isPurple = cornerDist < Math.min(W,H)*0.30 && rng() > 0.40;
+                    const h = isPurple ? 265+rng()*35 : 318+rng()*28;
+                    const s = isPurple ? 52+rng()*28  : 62+rng()*24;
+                    const l = isPurple ? 24+rng()*24  : 46+rng()*22;
+                    ctx.save();
+                    ctx.globalAlpha = alpha;
+                    ctx.beginPath();
+                    ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.lineTo(c2.x,c2.y);
+                    ctx.closePath();
+                    ctx.fillStyle = `hsl(${h},${s}%,${l}%)`;
+                    ctx.fill();
+                    ctx.strokeStyle = `hsla(${h},${s}%,${Math.max(l-12,18)}%,0.45)`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                for (let r=0; r<ROWS; r++) {
+                    for (let c=0; c<COLS; c++) {
+                        const i = r*(COLS+1)+c;
+                        tri(pts[i], pts[i+1], pts[i+COLS+1]);
+                        tri(pts[i+1], pts[i+COLS+2], pts[i+COLS+1]);
+                    }
+                }
+            }
+            draw();
+            window.addEventListener('resize', draw);
+        })();
+
         const apiKey = "";
         let state = { 
-            type: "Glazed", 
+            type: "Fluffy", 
             flavor: "Vanilla", 
             glaze: "Vanilla", 
             glazeHex: "#fdf5e6", 
@@ -312,6 +568,28 @@
             currentChef: 'Gordon',
             reviews: {} 
         };
+
+        // Purple slider fill + live value label
+        function updateSlider(el) {
+            const pct = ((el.value - el.min) / (el.max - el.min) * 100).toFixed(1);
+            el.style.background = `linear-gradient(to right, var(--purple) ${pct}%, #e0d0f0 ${pct}%)`;
+            document.getElementById('qty-label').innerText = el.value;
+        }
+        // Init slider on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const sl = document.getElementById('topping-qty');
+            if (sl) updateSlider(sl);
+            // ROAST wiggle
+            const roastBtn = document.getElementById('btn-submit');
+            if (roastBtn) {
+                roastBtn.addEventListener('click', () => {
+                    roastBtn.classList.add('wiggling');
+                    roastBtn.addEventListener('animationend', () => {
+                        roastBtn.classList.remove('wiggling');
+                    }, { once: true });
+                });
+            }
+        });
 
         const chefs = {
             Jacques: {
@@ -388,6 +666,20 @@
         function displayReview(review) {
             document.getElementById('score-display').innerText = review.score;
             document.getElementById('verdict-text').innerHTML = review.critique;
+
+            // FRESH / FAIL ribbon
+            const ribbon = document.getElementById('verdict-ribbon');
+            if (review.score > 7) {
+                ribbon.textContent = '🍩 FRESH';
+                ribbon.className = 'verdict-ribbon fresh';
+                ribbon.style.display = 'block';
+            } else if (review.score > 0) {
+                ribbon.textContent = '💀 FAIL';
+                ribbon.className = 'verdict-ribbon fail';
+                ribbon.style.display = 'block';
+            } else {
+                ribbon.style.display = 'none';
+            }
         }
 
         async function getChefReview(chefKey) {
@@ -438,7 +730,7 @@
             const scrollArea = document.querySelector('.verdict-scroll-area');
             
             btn.disabled = true;
-            btn.innerText = "PHOTOGRAPHING...";
+            btn.innerText = "⏳";
             imgContainer.style.display = 'block';
             imgContainer.className = 'loading-shimmer';
             imgContainer.innerHTML = '';
@@ -449,8 +741,27 @@
             const prompt = `A professional food photography macro shot of a ${state.type} donut (${state.flavor}) with thick ${state.glaze} glaze and ${state.selectedToppings.map(t => t.name).join(', ') || 'no toppings'}. High detail, soft bakery lighting, 8k resolution.`;
 
             try {
-                const encodedPrompt = encodeURIComponent(prompt);
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=512&height=512&nologo=true`;
+                const response = await fetch('/.netlify/functions/api', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'image',
+                        prompt: prompt
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Imagen API Error (${response.status}): ${errorText}`);
+                }
+
+                const data = await response.json();
+                
+                if (!data.predictions || !data.predictions[0]) {
+                    throw new Error("No image data returned from API.");
+                }
+
+                const imageUrl = `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
 
                 const img = new Image();
                 img.onload = () => {
@@ -471,11 +782,11 @@
                 console.error(e);
                 imgContainer.innerHTML = `<div style='padding:20px; text-align:center; color:#dc2626; font-weight:bold; font-size: 0.9rem;'>Camera Error:<br><br>${e.message}</div>`;
                 btn.disabled = false;
-                btn.innerText = "TRY AGAIN";
+                btn.innerText = "📸";
             }
         }
 
-        let scene, camera, renderer, donutGroup, frostingGroup, rackGroup, sharedFrostingMat;
+        let scene, camera, renderer, donutGroup, frostingGroup, rackGroup, toppingGroup, sharedFrostingMat;
 
         function createRack() {
             const group = new THREE.Group();
@@ -500,41 +811,90 @@
         function createGlaze(isCake, donutR, tubeR) {
             const group = new THREE.Group();
             sharedFrostingMat = new THREE.MeshStandardMaterial({ 
-                color: state.glazeHex, roughness: 0.1, metalness: 0.0, transparent: true, opacity: 0, side: THREE.DoubleSide
+                color: state.glazeHex, roughness: 0.08, metalness: 0.0,
+                transparent: true, opacity: 0, side: THREE.DoubleSide
             });
+
+            // ── Frosting cap (LatheGeometry arc over the top of the torus) ──
             const points = [];
             const segments = 32;
             const startAngle = isCake ? -Math.PI * 0.4 : -Math.PI * 0.5;
-            const endAngle = isCake ? Math.PI * 0.45 : Math.PI * 0.55;
+            const endAngle   = isCake ?  Math.PI * 0.45 :  Math.PI * 0.55;
             for (let i = 0; i <= segments; i++) {
                 const angle = startAngle + (i / segments) * (endAngle - startAngle); 
-                const x = donutR + Math.sin(angle) * tubeR;
-                const y = Math.cos(angle) * tubeR;
-                points.push(new THREE.Vector2(x, y));
+                points.push(new THREE.Vector2(
+                    donutR + Math.sin(angle) * tubeR,
+                    Math.cos(angle) * tubeR
+                ));
             }
-            const topGeo = new THREE.LatheGeometry(points, 64);
-            const topMesh = new THREE.Mesh(topGeo, sharedFrostingMat);
+            const topMesh = new THREE.Mesh(new THREE.LatheGeometry(points, 64), sharedFrostingMat);
             topMesh.castShadow = true; topMesh.receiveShadow = true;
             group.add(topMesh);
 
-            const dripCountOuter = isCake ? 16 : 8;
-            const outerAngle = endAngle - 0.05; 
-            const oEdgeX = donutR + Math.sin(outerAngle) * tubeR;
-            const oEdgeY = Math.cos(outerAngle) * tubeR;
-            for(let i = 0; i < dripCountOuter; i++) {
-                const angle = (i / dripCountOuter) * Math.PI * 2;
-                const dripLen = isCake ? (0.6 + Math.random() * 1.2) : (0.3 + Math.random() * 0.5);
-                const dripContainer = new THREE.Group();
-                const bodyGeo = new THREE.CylinderGeometry(0.2, 0.1, dripLen, 12);
-                bodyGeo.translate(0, -dripLen/2, 0); 
-                const body = new THREE.Mesh(bodyGeo, sharedFrostingMat);
-                dripContainer.add(body);
-                const capGeo = new THREE.SphereGeometry(0.1, 12, 12);
-                const cap = new THREE.Mesh(capGeo, sharedFrostingMat);
-                cap.position.y = -dripLen; dripContainer.add(cap);
-                dripContainer.position.set(Math.cos(angle) * oEdgeX, oEdgeY, Math.sin(angle) * oEdgeX);
-                group.add(dripContainer);
+            // ── Teardrop drip profile builder ──
+            function makeDripProfile(len, topW) {
+                const pts = [];
+                const steps = 20;
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    let r;
+                    if (t < 0.14) {
+                        // Wide pooling lip at attachment
+                        r = topW * (1 - (t / 0.14) * 0.3);
+                    } else if (t < 0.62) {
+                        // Stem narrows
+                        const s = (t - 0.14) / 0.48;
+                        r = topW * 0.70 * (1 - s * 0.68);
+                    } else {
+                        // Teardrop belly
+                        const s = (t - 0.62) / 0.38;
+                        const stemR = topW * 0.70 * 0.32;
+                        r = stemR + Math.sin(s * Math.PI) * topW * 0.52;
+                    }
+                    pts.push(new THREE.Vector2(Math.max(0.008, r), -t * len));
+                }
+                return pts;
             }
+
+            // ── Outer-edge drips ──
+            const outerAngle  = endAngle - 0.05;
+            const oEdgeR      = donutR + Math.sin(outerAngle) * tubeR; // radial dist
+            const oEdgeY      = Math.cos(outerAngle) * tubeR;          // height
+            const outerCount  = isCake ? 18 : 13;
+
+            for (let i = 0; i < outerCount; i++) {
+                // Jittered angle so drips aren't perfectly evenly spaced
+                const baseAngle = (i / outerCount) * Math.PI * 2;
+                const angle     = baseAngle + (Math.random() - 0.5) * (Math.PI * 2 / outerCount) * 0.65;
+                const len       = isCake ? (0.55 + Math.random() * 1.3) : (0.28 + Math.random() * 0.68);
+                const topW      = 0.14 + Math.random() * 0.09;
+
+                const dripGeo  = new THREE.LatheGeometry(makeDripProfile(len, topW), 10);
+                const drip     = new THREE.Mesh(dripGeo, sharedFrostingMat);
+                drip.position.set(Math.cos(angle) * oEdgeR, oEdgeY, Math.sin(angle) * oEdgeR);
+                drip.castShadow = true;
+                group.add(drip);
+            }
+
+            // ── Inner-edge drips (into the hole) ──
+            const innerAngle = startAngle + 0.05;
+            const iEdgeR     = donutR + Math.sin(innerAngle) * tubeR;
+            const iEdgeY     = Math.cos(innerAngle) * tubeR;
+            const innerCount = isCake ? 8 : 5;
+
+            for (let i = 0; i < innerCount; i++) {
+                const baseAngle = (i / innerCount) * Math.PI * 2;
+                const angle     = baseAngle + (Math.random() - 0.5) * (Math.PI * 2 / innerCount) * 0.7;
+                const len       = 0.18 + Math.random() * 0.38;
+                const topW      = 0.08 + Math.random() * 0.06;
+
+                const dripGeo  = new THREE.LatheGeometry(makeDripProfile(len, topW), 8);
+                const drip     = new THREE.Mesh(dripGeo, sharedFrostingMat);
+                drip.position.set(Math.cos(angle) * iEdgeR, iEdgeY, Math.sin(angle) * iEdgeR);
+                drip.castShadow = true;
+                group.add(drip);
+            }
+
             return group;
         }
 
@@ -580,6 +940,8 @@
             scene.add(donutGroup);
             rackGroup = createRack();
             scene.add(rackGroup);
+            toppingGroup = new THREE.Group();
+            scene.add(toppingGroup);
             
             const isCake = state.type === 'Cake';
             const donutR = isCake ? 2.4 : 2.9;
@@ -694,7 +1056,7 @@
                                     
                                     mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
                                     
-                                    scene.add(mesh);
+                                    toppingGroup.add(mesh);
                                     
                                     // Calculate exact landing height based on the curve of the torus
                                     let surfaceY;
@@ -774,20 +1136,37 @@
                 const initialReviewPromise = getChefReview(state.currentChef);
 
                 animatePastry().then(async () => {
+                    // animatePastry's rAF loop exits on resolve — restart a
+                    // lightweight spin so the donut keeps turning during the pause
+                    let idleActive = true;
+                    (function idleSpin() {
+                        if (!idleActive) return;
+                        donutGroup.rotation.y  += 0.003;
+                        rackGroup.rotation.y   += 0.003;
+                        toppingGroup.rotation.y += 0.003;
+                        renderer.render(scene, camera);
+                        requestAnimationFrame(idleSpin);
+                    })();
+
                     const review = await initialReviewPromise;
                     state.reviews[state.currentChef] = review;
                     
                     document.getElementById('score-display').innerText = `${review.score}`;
                     document.getElementById('verdict-text').innerHTML = review.critique;
+                    displayReview(review);
                     
-                    const vBackdrop = document.getElementById('verdict-backdrop');
-                    const vContainer = document.getElementById('verdict-container');
-                    vBackdrop.style.display = 'block';
-                    vContainer.style.display = 'flex';
+                    // Pause so the user can admire the donut before the roast appears
                     setTimeout(() => {
-                        vBackdrop.style.opacity = '1';
-                        vContainer.classList.add('show');
-                    }, 50);
+                        idleActive = false; // card is up, stop burning CPU on hidden canvas
+                        const vBackdrop = document.getElementById('verdict-backdrop');
+                        const vContainer = document.getElementById('verdict-container');
+                        vBackdrop.style.display = 'block';
+                        vContainer.style.display = 'flex';
+                        setTimeout(() => {
+                            vBackdrop.style.opacity = '1';
+                            vContainer.classList.add('show');
+                        }, 50);
+                    }, 2500);
                 });
             }, 400); 
         }
