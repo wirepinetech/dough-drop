@@ -692,6 +692,7 @@
 
         async function switchChef(chefKey) {
             state.currentChef = chefKey;
+            localStorage.setItem('lastChef', chefKey);
             document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(`btn-${chefKey.toLowerCase()}`).classList.add('active');
             document.getElementById('chef-title').innerText = chefs[chefKey].title;
@@ -1028,7 +1029,7 @@
                 const shareBtn = document.createElement('button');
                 shareBtn.textContent = '↑ SHARE';
                 shareBtn.style.cssText = `background:#5B2D8E;color:white;border:3px solid #4a2c2a;padding:10px 24px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;`;
-                shareBtn.onclick = () => navigator.share({ files: [file], title: 'DoughDrop Roast' }).catch(() => {});
+                shareBtn.onclick = () => navigator.share({ files: [file], title: 'DoughDrop Roast', text: 'Roasted by DoughDrop 🍩', url: 'https://analynet.xyz' }).catch(() => {});
                 btnRow.appendChild(shareBtn);
             }
             const saveBtn = document.createElement('button');
@@ -1411,6 +1412,15 @@
                 setTimeout(() => canvasContainer.style.opacity = '1', 50);
                 init3D();
                 
+                // Restore sticky chef from last session
+                const savedChef = localStorage.getItem('lastChef');
+                if (savedChef && chefs[savedChef]) {
+                    state.currentChef = savedChef;
+                    document.querySelectorAll('.chef-btn').forEach(b => b.classList.remove('active'));
+                    document.getElementById(`btn-${savedChef.toLowerCase()}`).classList.add('active');
+                    document.getElementById('chef-title').innerText = chefs[savedChef].title;
+                }
+
                 // Fixed forever: Route initial load directly through your secure proxy helper
                 const initialReviewPromise = getChefReview(state.currentChef);
 
