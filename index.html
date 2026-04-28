@@ -241,24 +241,46 @@
 
         #verdict-container {
             position: fixed;
-            top: 53%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.5) translateY(100px);
             background: var(--shop-white); border: 6px solid var(--text-dark);
             border-radius: 30px;
-            padding-top: 3.5rem;
+            padding-top: 0;
             padding-bottom: 0;
             z-index: 20;
             display: none; opacity: 0;
             transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             width: 90%; max-width: 450px;
-            max-height: 82vh;
+            max-height: 86vh;
             flex-direction: column; align-items: center;
             box-shadow: 0px 20px 0px rgba(74, 44, 42, 0.15);
+            overflow: hidden;
         }
 
         #verdict-container.show {
             opacity: 1; transform: translate(-50%, -50%) scale(1) translateY(0);
+        }
+
+        .verdict-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            width: 100%;
+            padding: 0.9rem 1.25rem 0.75rem;
+            flex: 0 0 auto;
+            border-bottom: 2px solid #f0e8f8;
+        }
+
+        .score-badge {
+            flex: 0 0 auto;
+            background: var(--shop-yellow);
+            width: 64px; height: 64px; border: 4px solid var(--text-dark);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-family: 'Fredoka One', 'Boogaloo', cursive;
+            font-size: 2rem; font-weight: 400;
+            box-shadow: 4px 4px 0 var(--purple);
         }
 
         .verdict-scroll-area {
@@ -269,31 +291,18 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 1.5rem;
+            padding: 1rem 1.5rem 0.5rem;
         }
-        
-        /* Custom styled scrollbars for the new scroll area */
+
         .verdict-scroll-area::-webkit-scrollbar { width: 6px; }
         .verdict-scroll-area::-webkit-scrollbar-track { background: transparent; }
         .verdict-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
 
-        .score-badge {
-            position: absolute; 
-            top: -50px; left: 50%; margin-left: -50px; 
-            background: var(--shop-yellow);
-            width: 100px; height: 100px; border: 6px solid var(--text-dark);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-family: 'Fredoka One', 'Boogaloo', cursive;
-            font-size: 2.4rem; font-weight: 400; transform: rotate(10deg);
-            box-shadow: 5px 5px 0 var(--purple);
-            z-index: 25; 
-        }
+        #chef-title { margin: 0; flex: 1; color: var(--text-dark); text-transform: uppercase; font-size: 1.15rem; font-family: 'Fredoka One', 'Boogaloo', cursive; letter-spacing: 1.5px; line-height: 1.2; }
 
-        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.3rem; font-family: 'Fredoka One', 'Boogaloo', cursive; letter-spacing: 2px; }
-        
         #verdict-text {
-            font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700; line-height: 1.55; text-align: center;
-            margin-bottom: 1.5rem; color: #333; min-height: 80px;
+            font-family: 'Nunito', sans-serif; font-size: 1.2rem; font-weight: 700; line-height: 1.6; text-align: center;
+            margin-bottom: 0.75rem; color: #333; min-height: 60px;
         }
 
         .chef-switcher {
@@ -305,24 +314,24 @@
         }
 
         .chef-btn {
-            flex: 1 1 calc(33.333% - 8px); 
-            min-width: 80px;
-            padding: 0.5rem 0.3rem 0.4rem;
+            flex: 1 1 calc(33.333% - 8px);
+            min-width: 70px;
+            padding: 0.35rem 0.2rem 0.3rem;
             border: 3px solid var(--text-dark);
-            border-radius: 12px;
-            font-size: 0.72rem; font-weight: 800;
+            border-radius: 10px;
+            font-size: 0.65rem; font-weight: 800;
             cursor: pointer;
             background: white;
             transition: 0.2s;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
             line-height: 1;
             font-family: 'Oswald', sans-serif;
             letter-spacing: 1px;
         }
-        .chef-btn .chef-icon { font-size: 1.3rem; }
+        .chef-btn .chef-icon { font-size: 1.1rem; }
 
         /* Per-chef brand colours */
         .chef-btn[data-chef="Jacques"] { border-color: #1A3F8A; color: #1A3F8A; }
@@ -385,24 +394,29 @@
         .btn-rebake {
             background: radial-gradient(circle at 50% 35%, #86efac, #16a34a);
             color: var(--text-dark); border: 4px solid var(--text-dark);
-            padding: 1rem 2rem; font-size: 1.8rem; font-weight: 400; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
-            transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 3px;
-            width: 100%;
+            padding: 0.65rem 1rem; font-size: 1.3rem; font-weight: 400; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 5px 0 var(--text-dark);
+            transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 2px;
+            flex: 1;
             font-family: 'Fredoka One', 'Boogaloo', cursive;
         }
-        .btn-rebake:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--text-dark); }
+        .btn-rebake:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--text-dark); }
 
-        /* Pinned footer inside the verdict card */
         .verdict-footer {
             flex: 0 0 auto;
             width: 100%;
-            padding: 0.75rem 1.5rem 1.5rem;
+            padding: 0.6rem 1.25rem 1.1rem;
             display: flex;
             flex-direction: column;
             align-items: stretch;
-            gap: 10px;
+            gap: 8px;
             border-top: 2px solid #f0e8f8;
+        }
+
+        .verdict-footer-bottom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         /* CSS donut spinner for loading states */
@@ -448,7 +462,7 @@
         </div>
 
         <div id="cake-options" style="display: none;">
-            <label class="section-label">🍰 Cake Flavor</label>
+            <label class="section-label">CAKE FLAVOR</label>
             <div class="visual-grid">
                 <div class="visual-card active" onclick="selectFlavor('Vanilla', this)"><span>Vanilla</span></div>
                 <div class="visual-card" onclick="selectFlavor('Chocolate', this)"><span>Chocolate</span></div>
@@ -488,16 +502,17 @@
     <div id="verdict-backdrop"></div>
     
     <div id="verdict-container">
-        <div class="score-badge" id="score-display">?</div>
         <div class="verdict-ribbon" id="verdict-ribbon"></div>
 
-        <!-- Scrollable area: just the roast text + generated photo -->
-        <div class="verdict-scroll-area">
+        <div class="verdict-header">
             <h2 id="chef-title">Gordon Ramsay Says:</h2>
+            <div class="score-badge" id="score-display">?</div>
+        </div>
+
+        <div class="verdict-scroll-area">
             <div id="verdict-text">Consulting the culinary gods...</div>
         </div>
 
-        <!-- Pinned footer: always visible below the roast text -->
         <div class="verdict-footer">
             <div class="chef-switcher" id="chef-switcher">
                 <button class="chef-btn" data-chef="Jacques" id="btn-jacques" onclick="switchChef('Jacques')">
@@ -510,9 +525,10 @@
                     <span class="chef-icon">⭐</span>GORDON
                 </button>
             </div>
-            <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">🔄 REROAST!</button>
-            <!-- Easter egg: collect your roast card -->
-            <button class="btn-camera-egg" id="btn-visualize" onclick="generateShareCard()" title="shhh">🐣</button>
+            <div class="verdict-footer-bottom">
+                <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">REROAST!</button>
+                <button class="btn-camera-egg" id="btn-visualize" onclick="generateShareCard()" title="shhh">🐣</button>
+            </div>
         </div>
     </div>
 
@@ -838,9 +854,12 @@
 
         function generateShareCard() {
             const review = state.reviews[state.currentChef];
+            alert('clicked. review: ' + (review ? JSON.stringify(review).slice(0,80) : 'NONE'));
             if (!review) return;
             document.fonts.ready.then(() => {
-                const W = 420, H = 590, SC = 2;
+                const appIcon = new Image();
+                appIcon.src = 'dough-drop.png';
+                const W = 420, H = 600, SC = 2;
                 const canvas = document.createElement('canvas');
                 canvas.width = W * SC; canvas.height = H * SC;
                 const ctx = canvas.getContext('2d');
@@ -849,89 +868,150 @@
                 const cc = chefColors[state.currentChef];
                 const isFresh = review.score > 7;
                 const chefIcon = { Gordon: '⭐', Fieri: '🔥', Jacques: '🎩' }[state.currentChef];
+                const chefLabel = { Gordon: 'GORDON RAMSAY', Fieri: 'GUY FIERI', Jacques: 'JACQUES PÉPIN' }[state.currentChef];
 
-                // Clip to card shape
-                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 22); ctx.clip();
-
-                // Base fill + poly bg
+                // --- BASE: pink fill + poly bg (full card) ---
+                ctx.save();
+                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 26); ctx.clip();
                 ctx.fillStyle = '#ff6b9e'; ctx.fillRect(0, 0, W, H);
                 drawPolyBgOnCtx(ctx, W, H);
+                ctx.restore();
 
-                // --- TITLE BAR ---
-                const TITLE_H = 72;
-                ctx.fillStyle = cc.titleBg; ctx.fillRect(0, 0, W, TITLE_H);
-                ctx.fillStyle = '#4a2c2a'; ctx.fillRect(0, TITLE_H - 3, W, 3);
-                ctx.fillStyle = 'white';
-                ctx.font = '24px "Fredoka One"';
+                // Clip all subsequent drawing to card shape
+                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 26); ctx.clip();
+
+                // --- HEADER BAND ---
+                const HDR_H = 100;
+                ctx.fillStyle = cc.titleBg; ctx.fillRect(0, 0, W, HDR_H);
+                ctx.fillStyle = cc.border; ctx.fillRect(0, HDR_H - 5, W, 5);
+
+                // Chef emoji
+                ctx.font = '50px serif';
                 ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-                ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; ctx.shadowBlur = 4;
-                ctx.fillText(chefs[state.currentChef].title.toUpperCase(), 18, TITLE_H / 2);
+                ctx.fillText(chefIcon, 16, HDR_H / 2 - 2);
+
+                // Chef name
+                ctx.fillStyle = 'white';
+                ctx.font = '23px "Fredoka One"';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+                ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2; ctx.shadowBlur = 4;
+                ctx.fillText(chefLabel, 82, 16);
                 ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = 'transparent';
 
-                // Score badge (overlapping title bar right, into illustration area)
-                const BX = W - 50, BY = TITLE_H + 12, BR = 38;
-                ctx.beginPath(); ctx.arc(BX + 4, BY + 4, BR, 0, Math.PI * 2); ctx.fillStyle = '#5B2D8E'; ctx.fill();
-                ctx.beginPath(); ctx.arc(BX, BY, BR, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,255,255,0.58)';
+                ctx.font = '600 12px Oswald';
+                ctx.fillText('DOUGH DROP ROAST CARD', 83, 46);
+
+                // Score badge — right side of header, large and prominent
+                const SCX = W - 58, SCY = HDR_H / 2, SCR = 38;
+                ctx.beginPath(); ctx.arc(SCX + 5, SCY + 5, SCR, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fill();
+                ctx.beginPath(); ctx.arc(SCX, SCY, SCR, 0, Math.PI * 2);
                 ctx.fillStyle = '#fcd34d'; ctx.fill();
-                ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 4; ctx.stroke();
-                ctx.fillStyle = '#4a2c2a'; ctx.font = '34px "Fredoka One"';
+                ctx.strokeStyle = 'rgba(255,255,255,0.9)'; ctx.lineWidth = 4; ctx.stroke();
+                ctx.fillStyle = '#4a2c2a';
+                ctx.font = `${review.score >= 10 ? '28px' : '34px'} "Fredoka One"`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(review.score, BX, BY + 1);
+                ctx.fillText(review.score, SCX, SCY + 1);
 
-                // --- ILLUSTRATION AREA ---
-                const ILL_Y = TITLE_H + 3, ILL_H = 136;
-                ctx.font = '76px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(chefIcon, W / 2 - 20, ILL_Y + ILL_H / 2);
-
-                const tStr = state.selectedToppings.length ? state.selectedToppings.map(t => t.name).join(' · ') : 'No Toppings';
-                const buildStr = `${state.type === 'Cake' ? state.flavor + ' Cake' : 'Glazed'} · ${state.glaze} · ${tStr}`;
-                ctx.font = '600 12px Oswald'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
-                ctx.fillStyle = 'rgba(255,255,255,0.9)';
-                ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 3;
-                ctx.fillText(buildStr, W / 2, ILL_Y + ILL_H - 4);
-                ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+                // --- BUILD DESCRIPTOR STRIP ---
+                const BD_Y = HDR_H;
+                const tStr = state.selectedToppings.length ? state.selectedToppings.map(t => t.name).join(' · ') : 'Plain';
+                const buildStr = `${state.type === 'Cake' ? state.flavor + ' Cake' : 'Glazed'} · ${state.glaze} Frosting · ${tStr}`;
+                ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fillRect(0, BD_Y, W, 34);
+                ctx.fillStyle = 'rgba(255,255,255,0.88)';
+                ctx.font = '600 12px Oswald';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 2;
+                ctx.fillText(buildStr, W / 2, BD_Y + 17);
+                ctx.shadowBlur = 0;
 
                 // --- ROAST TEXT BOX ---
-                const TB_X = 16, TB_Y = ILL_Y + ILL_H + 10, TB_W = W - 32, TB_H = 196;
-                ctx.strokeStyle = cc.border; ctx.lineWidth = 3;
-                ctx.beginPath(); ctx.roundRect(TB_X - 3, TB_Y - 3, TB_W + 6, TB_H + 6, 15); ctx.stroke();
+                const TB_X = 18, TB_Y = BD_Y + 48, TB_W = W - 36, TB_H = 248;
+                // Cream box
                 ctx.fillStyle = '#fff9f0';
-                ctx.beginPath(); ctx.roundRect(TB_X, TB_Y, TB_W, TB_H, 12); ctx.fill();
-                ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 2; ctx.stroke();
-                ctx.fillStyle = '#4a2c2a'; ctx.font = 'bold 15px Nunito';
-                ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-                wrapText(ctx, review.critique, W / 2, TB_Y + 14, TB_W - 24, 22);
+                ctx.beginPath(); ctx.roundRect(TB_X, TB_Y, TB_W, TB_H, 16); ctx.fill();
+                ctx.strokeStyle = cc.border; ctx.lineWidth = 3.5;
+                ctx.beginPath(); ctx.roundRect(TB_X, TB_Y, TB_W, TB_H, 16); ctx.stroke();
 
-                // --- FRESH / FAIL BANNER ---
-                const BAN_Y = TB_Y + TB_H + 10, BAN_H = 46;
-                ctx.fillStyle = isFresh ? '#fcd34d' : '#dc2626';
-                ctx.beginPath(); ctx.roundRect(TB_X, BAN_Y, TB_W, BAN_H, 8); ctx.fill();
+                // "THE VERDICT" label tab at top of box
+                const TAB_W = 130, TAB_H = 28;
+                ctx.fillStyle = cc.border;
+                ctx.beginPath(); ctx.roundRect(TB_X + 16, TB_Y - TAB_H + 4, TAB_W, TAB_H, [0, 0, 6, 6]); ctx.fill();
+                ctx.fillStyle = 'white';
+                ctx.font = '700 12px Oswald';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+                ctx.fillText('THE VERDICT', TB_X + 28, TB_Y - TAB_H / 2 + 4);
+
+                // Auto-size roast text to fill the box
+                const TEXT_MAX_W = TB_W - 36;
+                const TEXT_MAX_H = TB_H - 30;
+                let fontSize = 22;
+                while (fontSize > 11) {
+                    ctx.font = `bold ${fontSize}px Nunito`;
+                    const words = review.critique.split(' ');
+                    let line = '', lines = 1;
+                    for (const w of words) {
+                        const t = line + w + ' ';
+                        if (ctx.measureText(t).width > TEXT_MAX_W && line) { lines++; line = w + ' '; }
+                        else { line = t; }
+                    }
+                    if (lines * Math.ceil(fontSize * 1.52) <= TEXT_MAX_H) break;
+                    fontSize--;
+                }
+                const lineH = Math.ceil(fontSize * 1.52);
+                ctx.fillStyle = '#2a1a0e';
+                ctx.font = `bold ${fontSize}px Nunito`;
+                ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+                wrapText(ctx, review.critique, W / 2, TB_Y + 22, TEXT_MAX_W, lineH);
+
+                // --- FRESH / FAIL STAMP ---
+                const STAMP_CX = W / 2, STAMP_CY = TB_Y + TB_H + 36;
+                ctx.save();
+                ctx.translate(STAMP_CX, STAMP_CY);
+                ctx.rotate(isFresh ? 0.04 : -0.04);
+                const SW = 210, SH = 52;
+                // Dashed border stamp effect
+                ctx.beginPath(); ctx.roundRect(-SW / 2 - 4, -SH / 2 - 4, SW + 8, SH + 8, 10);
+                ctx.strokeStyle = isFresh ? 'rgba(74,44,42,0.35)' : 'rgba(255,255,255,0.35)';
+                ctx.lineWidth = 2; ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]);
+                ctx.beginPath(); ctx.roundRect(-SW / 2, -SH / 2, SW, SH, 8);
+                ctx.fillStyle = isFresh ? '#fcd34d' : '#dc2626'; ctx.fill();
                 ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 2.5; ctx.stroke();
                 ctx.fillStyle = isFresh ? '#4a2c2a' : 'white';
-                ctx.font = '24px "Fredoka One"'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-                ctx.fillText(isFresh ? '🍩 FRESH' : 'FAIL 💀', W / 2, BAN_Y + BAN_H / 2);
+                ctx.font = '28px "Fredoka One"';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(isFresh ? '🍩 FRESH' : 'FAIL 💀', 0, 1);
+                ctx.restore();
 
-                // --- FOOTER ---
-                const FOOT_Y = BAN_Y + BAN_H + 10;
-                ctx.fillStyle = 'rgba(74,44,42,0.92)';
-                ctx.fillRect(0, FOOT_Y, W, H - FOOT_Y + 2);
-                ctx.fillStyle = 'white'; ctx.font = '18px "Fredoka One"';
-                ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-                ctx.fillText('DOUGH DROP', W / 2, FOOT_Y + 10);
-                ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '500 12px Oswald';
-                ctx.fillText('analynet.xyz', W / 2, FOOT_Y + 32);
+                // --- FOOTER with app icon ---
+                const FOOT_H = 58, FOOT_Y = H - FOOT_H;
+                ctx.fillStyle = 'rgba(42,26,14,0.95)';
+                ctx.fillRect(0, FOOT_Y, W, FOOT_H);
+                const ICON_SIZE = 30;
+                const ICON_X = W / 2 - 72;
+                const ICON_Y = FOOT_Y + (FOOT_H - ICON_SIZE) / 2;
+                try { ctx.drawImage(appIcon, ICON_X, ICON_Y, ICON_SIZE, ICON_SIZE); } catch(e) {}
+                const TXT_X = ICON_X + ICON_SIZE + 9;
+                ctx.fillStyle = 'white';
+                ctx.font = '17px "Fredoka One"';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+                ctx.fillText('DOUGH DROP', TXT_X, FOOT_Y + 12);
+                ctx.fillStyle = 'rgba(255,255,255,0.45)';
+                ctx.font = '500 11px Oswald';
+                ctx.fillText('analynet.xyz', TXT_X, FOOT_Y + 36);
 
-                // --- OUTER FRAME (on top of everything) ---
+                // --- OUTER FRAME ---
                 ctx.strokeStyle = cc.border; ctx.lineWidth = 10;
-                ctx.beginPath(); ctx.roundRect(5, 5, W - 10, H - 10, 18); ctx.stroke();
-                ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.roundRect(12, 12, W - 24, H - 24, 13); ctx.stroke();
+                ctx.beginPath(); ctx.roundRect(5, 5, W - 10, H - 10, 22); ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.roundRect(13, 13, W - 26, H - 26, 16); ctx.stroke();
 
                 // --- SHARE / DOWNLOAD ---
                 canvas.toBlob(blob => {
                     const file = new File([blob], 'dough-drop-roast.png', { type: 'image/png' });
                     if (navigator.share && navigator.canShare?.({ files: [file] })) {
-                        navigator.share({ files: [file], title: 'My Dough Drop Roast Card' }).catch(() => showCardModal(canvas.toDataURL()));
+                        navigator.share({ files: [file], title: 'DoughDrop Roast' }).catch(() => showCardModal(canvas.toDataURL()));
                     } else {
                         showCardModal(canvas.toDataURL());
                     }
