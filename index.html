@@ -4,8 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dough Drop</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#5B2D8E">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dough Drop">
+    <link rel="apple-touch-icon" href="/dough-drop.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Oswald:wght@400;500;600;700&family=Boogaloo&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
@@ -63,9 +70,9 @@
             object-fit: cover;
         }
 
-        h1 { 
-            font-family: 'Boogaloo', 'Comic Sans MS', cursive;
-            font-size: 2.8rem; margin: 0; color: white; 
+        h1 {
+            font-family: 'Fredoka One', 'Boogaloo', cursive;
+            font-size: 2.8rem; margin: 0; color: white;
             text-shadow: 3px 3px 0px var(--text-dark);
             text-transform: uppercase;
             letter-spacing: 4px;
@@ -84,15 +91,17 @@
         }
 
         .section-label {
-            font-family: 'Boogaloo', cursive;
+            font-family: 'Oswald', 'Boogaloo', sans-serif;
             font-size: 1.05rem; text-transform: uppercase; color: var(--text-dark);
-            margin: 1.5rem 0 0.75rem; font-weight: 400; letter-spacing: 2px;
+            margin: 1.5rem 0 0.75rem; font-weight: 600; letter-spacing: 2px;
         }
 
         .visual-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .visual-card {
             background: white; border: 3px solid #e2e8f0; border-radius: 20px;
             padding: 15px; text-align: center; cursor: pointer; transition: 0.2s;
+            font-family: 'Oswald', sans-serif; font-weight: 600; letter-spacing: 1px;
+            text-transform: uppercase;
         }
         .visual-card.active {
             background: var(--shop-pink);
@@ -135,7 +144,8 @@
         .topping-item {
             background: white; border: 2.5px solid #dde; border-radius: 50px;
             padding: 9px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer;
-            font-size: 0.85rem; font-weight: 700;
+            font-family: 'Oswald', sans-serif; font-size: 0.85rem; font-weight: 500;
+            letter-spacing: 0.5px; text-transform: uppercase;
             transition: all 0.15s cubic-bezier(0.2,0,0,1);
         }
         .topping-item.active {
@@ -154,23 +164,10 @@
             gap: 10px;
             margin: 12px 0 4px;
         }
-        .slider-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; }
-        .slider-label {
-            text-align: center;
-            font-family: 'Boogaloo', cursive;
-            font-size: 1rem;
-            letter-spacing: 4px;
-            color: var(--purple);
-            margin-bottom: 0.3rem;
-        }
-        .slider-label span {
-            color: var(--text-dark);
-            background: #ede0fc;
-            border-radius: 6px;
-            padding: 1px 8px;
-            margin-left: 4px;
-            letter-spacing: 0;
-            font-size: 0.9rem;
+        .slider-icon {
+            font-family: 'Oswald', sans-serif; font-size: 0.8rem; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase; color: var(--purple);
+            flex-shrink: 0; line-height: 1;
         }
 
         /* Purple range input */
@@ -203,11 +200,13 @@
         }
 
         .btn-primary {
-            width: 100%; background: #4ade80; color: var(--text-dark); border: 4px solid var(--text-dark);
-            padding: 1.1rem; font-size: 1.5rem; font-weight: 400; border-radius: 50px;
+            width: 100%;
+            background: radial-gradient(circle at 50% 35%, #86efac, #16a34a);
+            color: var(--text-dark); border: 4px solid var(--text-dark);
+            padding: 1.1rem; font-size: 1.8rem; font-weight: 400; border-radius: 50px;
             margin-top: 2rem; cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
             transition: transform 0.1s, box-shadow 0.1s;
-            font-family: 'Boogaloo', cursive;
+            font-family: 'Fredoka One', 'Boogaloo', cursive;
             letter-spacing: 3px;
         }
         .btn-primary:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--text-dark); }
@@ -284,13 +283,13 @@
             background: var(--shop-yellow);
             width: 100px; height: 100px; border: 6px solid var(--text-dark);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-family: 'Boogaloo', cursive;
+            font-family: 'Fredoka One', 'Boogaloo', cursive;
             font-size: 2.4rem; font-weight: 400; transform: rotate(10deg);
             box-shadow: 5px 5px 0 var(--purple);
             z-index: 25; 
         }
 
-        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.3rem; font-family: 'Boogaloo', cursive; letter-spacing: 2px; }
+        #chef-title { margin-top: 0; color: var(--text-dark); text-transform: uppercase; font-size: 1.3rem; font-family: 'Fredoka One', 'Boogaloo', cursive; letter-spacing: 2px; }
         
         #verdict-text {
             font-family: 'Nunito', sans-serif; font-size: 1.05rem; font-weight: 700; line-height: 1.55; text-align: center;
@@ -320,8 +319,8 @@
             align-items: center;
             gap: 3px;
             line-height: 1;
-            font-family: 'Nunito', sans-serif;
-            letter-spacing: 0.5px;
+            font-family: 'Oswald', sans-serif;
+            letter-spacing: 1px;
         }
         .chef-btn .chef-icon { font-size: 1.3rem; }
 
@@ -338,8 +337,8 @@
         .verdict-ribbon {
             position: absolute;
             top: 18px;
-            font-family: 'Comic Sans MS', "Chalkboard SE", "Marker Felt", sans-serif;
-            font-size: 10px; font-weight: 900; letter-spacing: 1.5px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
             padding: 3px 12px;
             border: 2px solid var(--text-dark);
             border-radius: 4px;
@@ -360,19 +359,20 @@
             transform: rotate(-3deg);
         }
 
-        /* Tiny camera easter egg */
         .btn-camera-egg {
             background: none;
-            border: none;
+            border: 2px solid var(--text-dark);
             font-size: 1.1rem;
-            opacity: 0.25;
+            opacity: 1;
             cursor: pointer;
-            padding: 4px 10px;
-            border-radius: 8px;
-            transition: opacity 0.2s;
+            padding: 4px 12px;
+            border-radius: 50px;
+            box-shadow: 0 3px 0 var(--text-dark);
+            transition: transform 0.1s, box-shadow 0.1s;
             align-self: center;
         }
-        .btn-camera-egg:hover { opacity: 0.65; }
+        .btn-camera-egg:hover { opacity: 0.85; }
+        .btn-camera-egg:active { transform: translateY(3px); box-shadow: none; }
 
         #generated-image-container {
             width: 100%; aspect-ratio: 1; background: #eee; border-radius: 15px;
@@ -383,14 +383,15 @@
         #generated-image-container img { width: 100%; height: 100%; object-fit: cover; }
 
         .btn-rebake {
-            background: var(--shop-yellow); color: var(--text-dark); border: 4px solid var(--text-dark);
-            padding: 1rem 2rem; font-size: 1.6rem; font-weight: 400; border-radius: 30px;
+            background: radial-gradient(circle at 50% 35%, #86efac, #16a34a);
+            color: var(--text-dark); border: 4px solid var(--text-dark);
+            padding: 1rem 2rem; font-size: 1.8rem; font-weight: 400; border-radius: 50px;
             cursor: pointer; box-shadow: 0 6px 0 var(--text-dark);
             transition: transform 0.1s, box-shadow 0.1s; text-transform: uppercase; letter-spacing: 3px;
             width: 100%;
-            font-family: 'Boogaloo', cursive;
+            font-family: 'Fredoka One', 'Boogaloo', cursive;
         }
-        .btn-rebake:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--text-dark); }
+        .btn-rebake:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--text-dark); }
 
         /* Pinned footer inside the verdict card */
         .verdict-footer {
@@ -417,6 +418,12 @@
             flex-shrink: 0;
         }
 
+        @keyframes poly-breathe {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.18) saturate(1.35); }
+        }
+        #poly-bg.roast-hover { animation: poly-breathe 1.8s ease-in-out infinite; }
+
         .loading-shimmer {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%; animation: shimmer 1.5s infinite;
@@ -435,9 +442,8 @@
     </header>
 
     <main id="builder">
-        <label class="section-label">🍩 BASE</label>
         <div class="visual-grid">
-            <div class="visual-card active" onclick="selectType('Fluffy', this)"><span>Fluffy</span></div>
+            <div class="visual-card active" onclick="selectType('Fluffy', this)"><span>Glazed</span></div>
             <div class="visual-card" onclick="selectType('Cake', this)"><span>Cake</span></div>
         </div>
 
@@ -449,33 +455,32 @@
             </div>
         </div>
 
-        <label class="section-label">🎨 FROSTING</label>
+        <label class="section-label">FROSTING</label>
         <div class="glaze-row">
-            <div class="glaze-drip-ui" style="background:#4a2c2a;" onclick="selectGlaze('Chocolate', this, '#4a2c2a')">
-                <span style="font-size:1.8rem;" title="Chocolate">🍫</span>
+            <div class="glaze-drip-ui" style="background:radial-gradient(circle at 40% 35%, #7a4a3a, #2a140c);" onclick="selectGlaze('Chocolate', this, '#4a2c2a')">
+                <span style="font-size:1.3rem;" title="Chocolate">🟫</span>
             </div>
-            <div class="glaze-drip-ui" style="background:#ff6b9e;" onclick="selectGlaze('Strawberry', this, '#ff6b9e')">
+            <div class="glaze-drip-ui" style="background:radial-gradient(circle at 40% 35%, #ffb0cc, #cc3366);" onclick="selectGlaze('Strawberry', this, '#ff6b9e')">
                 <span style="font-size:1.8rem;" title="Strawberry">🍓</span>
             </div>
-            <div class="glaze-drip-ui" style="background:#c68642;" onclick="selectGlaze('Maple', this, '#c68642')">
+            <div class="glaze-drip-ui" style="background:radial-gradient(circle at 40% 35%, #e8b870, #8b5a1a);" onclick="selectGlaze('Maple', this, '#c68642')">
                 <span style="font-size:1.8rem;" title="Maple">🍁</span>
             </div>
-            <div class="glaze-drip-ui active" style="background:#fdf5e6;" onclick="selectGlaze('Vanilla', this, '#fdf5e6')">
-                <span style="font-size:1.8rem;" title="Vanilla">🍦</span>
+            <div class="glaze-drip-ui active" style="background:radial-gradient(circle at 40% 35%, #ffffff, #e8d5b0);" onclick="selectGlaze('Vanilla', this, '#fdf5e6')">
+                <span style="font-size:1.3rem;" title="Vanilla">🤍</span>
             </div>
         </div>
 
-        <label class="section-label">✨ Toppings</label>
+        <label class="section-label">Toppings</label>
         <div class="topping-grid" id="topping-container"></div>
 
         <div class="slider-row">
-            <span class="slider-icon">🪶</span>
+            <span class="slider-icon">MEH</span>
             <input type="range" min="0" max="1000" value="400" class="slider" id="topping-qty" oninput="updateSlider(this)">
-            <span class="slider-icon">🪨</span>
+            <span class="slider-icon">BAM!</span>
         </div>
-        <div class="slider-label">LOAD<span id="qty-label">400</span></div>
 
-        <button class="btn-primary" id="btn-submit" onclick="startReview()">ROAST! 🔥</button>
+        <button class="btn-primary" id="btn-submit" onclick="startReview()">ROAST!</button>
     </main>
 
     <div id="canvas-container"></div>
@@ -490,7 +495,6 @@
         <div class="verdict-scroll-area">
             <h2 id="chef-title">Gordon Ramsay Says:</h2>
             <div id="verdict-text">Consulting the culinary gods...</div>
-            <div id="generated-image-container"></div>
         </div>
 
         <!-- Pinned footer: always visible below the roast text -->
@@ -507,8 +511,8 @@
                 </button>
             </div>
             <button class="btn-rebake" id="btn-rebake" onclick="location.reload()">🔄 REROAST!</button>
-            <!-- Easter egg: barely visible camera -->
-            <button class="btn-camera-egg" id="btn-visualize" onclick="generateDonutImage()" title="shhh">📸</button>
+            <!-- Easter egg: collect your roast card -->
+            <button class="btn-camera-egg" id="btn-visualize" onclick="generateShareCard()" title="shhh">🐣</button>
         </div>
     </div>
 
@@ -586,8 +590,8 @@
         let state = { 
             type: "Fluffy", 
             flavor: "Vanilla", 
-            glaze: "Vanilla", 
-            glazeHex: "#fdf5e6", 
+            glaze: "Vanilla",
+            glazeHex: "#fdf5e6",
             selectedToppings: [],
             currentChef: 'Gordon',
             reviews: {} 
@@ -597,7 +601,6 @@
         function updateSlider(el) {
             const pct = ((el.value - el.min) / (el.max - el.min) * 100).toFixed(1);
             el.style.background = `linear-gradient(to right, var(--purple) ${pct}%, #e0d0f0 ${pct}%)`;
-            document.getElementById('qty-label').innerText = el.value;
         }
         // Init slider on load
         window.addEventListener('DOMContentLoaded', () => {
@@ -612,21 +615,30 @@
                         roastBtn.classList.remove('wiggling');
                     }, { once: true });
                 });
+                const polyBg = document.getElementById('poly-bg');
+                roastBtn.addEventListener('mouseenter', () => polyBg.classList.add('roast-hover'));
+                roastBtn.addEventListener('mouseleave', () => polyBg.classList.remove('roast-hover'));
             }
         });
+
+        const chefColors = {
+            Gordon:  { border: '#990000', titleBg: '#6a0000' },
+            Jacques: { border: '#1A3F8A', titleBg: '#0d2a6e' },
+            Fieri:   { border: '#C84800', titleBg: '#a03600' }
+        };
 
         const chefs = {
             Jacques: {
                 title: "Jacques Says:",
-                system: "You are Jacques, a world-class, extremely snooty French pastry critic. You are judging a donut. Be witty, slightly mean but fair, and very detailed about the flavor profile. Focus on the lack of 'finesse'. Keep your critique strictly to 2 or 3 short sentences. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+                system: "You are Jacques, a world-class, extremely snooty French pastry critic judging a donut. You find American donuts fundamentally beneath you — even when you secretly love one, you frame it as a personal failing. Be witty and cutting. Maximum 2 sentences, no exceptions. Focus on the lack of finesse. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
             },
             Fieri: {
                 title: "Guy Fieri Says:",
-                system: "You are Guy Fieri. You are judging a donut for Diners, Drive-Ins and Dives. Use lots of slang like 'Right on', 'Out of bounds', 'Funkalicious', and 'Flavor Town'. You love big flavors and don't care about health. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+                system: "You are Guy Fieri, born and raised in Santa Rosa, Sonoma County. You are judging a donut for Diners, Drive-Ins and Dives. Use slang like 'Right on', 'Out of bounds', 'Funkalicious', 'Flavor Town', and invent at least one new food slang word per review. You love big bold flavors. Always drop a specific Sonoma County city (Sebastopol, Forestville, Petaluma, Windsor, Rohnert Park, Santa Rosa) into the review — like you're telling them to drive there or it reminds you of a spot. React to the topping combo like it's the most important thing you've ever tasted. Keep it to 2-3 sentences. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
             },
             Gordon: {
                 title: "Gordon Ramsay Says:",
-                system: "You are Gordon Ramsay. You are judging a donut. You are incredibly aggressive, loud, and use creative culinary insults. If it's bad, it's 'RAW' or 'A DISASTER'. If it's good, it's 'STUNNING'. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
+                system: "You are Gordon Ramsay judging a donut. You are incredibly aggressive and loud. If the combo is offensive, call them a DONKEY. Use phrases like 'This is a DISASTER', 'Bloody hell', 'It's RAW', 'STUNNING', 'Finally some good food'. React specifically to the toppings — a donut covered in Takis should genuinely horrify you. Keep it to 2-3 sentences. Return ONLY JSON: {\"critique\": \"string\", \"score\": number}"
             }
         };
 
@@ -634,7 +646,7 @@
             { name: "Sprinkles", icon: "🌈", colors: [0xFF69B4, 0x00FF00, 0x00BFFF, 0xFFFF00], type: 'cylinder' },
             { name: "Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
             { name: "Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
-            { name: "Takis", icon: "🌪️", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
+            { name: "Takis", icon: "🧨", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
             { name: "Cap'n", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
             { name: "Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
         ];
@@ -709,11 +721,27 @@
         }
 
         async function getChefReview(chefKey) {
-            const isEasterEgg = state.type === 'Cake' && state.flavor === 'Vanilla' && state.glaze === 'Strawberry' && state.selectedToppings.length === 1 && state.selectedToppings[0].name === 'Rainbow Sprinkles';
-            
-            if (isEasterEgg && chefKey === 'Jacques') {
+            const hasTopping = name => state.selectedToppings.some(t => t.name === name);
+
+            const isJacquesEgg = state.type === 'Cake' && state.flavor === 'Vanilla' && state.glaze === 'Strawberry' && state.selectedToppings.length === 1 && hasTopping('Sprinkles');
+            const isGuyEgg    = state.type === 'Fluffy' && state.glaze === 'Maple' && state.selectedToppings.length === 2 && hasTopping('Bits') && hasTopping("Cap'n");
+            const isGordonEgg = state.type === 'Fluffy' && state.glaze === 'Vanilla' && state.selectedToppings.length === 0;
+
+            if (isJacquesEgg && chefKey === 'Jacques') {
                 return {
-                    critique: "Mon Dieu... *wipes away a single tear*. I wanted to despise it. It is so pedestrian, so profoundly un-French. But the dense crumb... the unapologetic pink sweetness... the joyful crunch of the rainbow sprinkles... I surrender! It transcends critique! It is an AMERICAN CLASSIC!!",
+                    critique: "Mon Dieu... *wipes away a single tear*. I wanted to despise it. It is so pedestrian, so profoundly un-French. But the dense crumb... the unapologetic pink sweetness... the joyful crunch of the sprinkles... I surrender! It transcends critique! It is an AMERICAN CLASSIC!!",
+                    score: 11
+                };
+            }
+            if (isGuyEgg && chefKey === 'Fieri') {
+                return {
+                    critique: "WINNER WINNER! This is the MAYOR OF FLAVOR TOWN speaking — maple glaze, BACON BITS, and Cap'n Crunch?! That's not a donut, that's a LIFESTYLE! They've been making something like this at a little spot off the 116 in Forestville and I have been CHANGED. Right on! Out of bounds! FLAME ON!",
+                    score: 11
+                };
+            }
+            if (isGordonEgg && chefKey === 'Gordon') {
+                return {
+                    critique: "...I have nothing. For the first time in thirty years I am completely, utterly SPEECHLESS. No garnish. No gimmick. Just perfection. This donut is more elegant than anything I have ever served in a Michelin-starred kitchen. My father would have wept. Now GET OUT before I do.",
                     score: 11
                 };
             }
@@ -750,67 +778,190 @@
             }
         }
 
-        async function generateDonutImage() {
-            const btn = document.getElementById('btn-visualize');
-            const imgContainer = document.getElementById('generated-image-container');
-            const scrollArea = document.querySelector('.verdict-scroll-area');
-            
-            btn.disabled = true;
-            btn.innerText = "⏳";
-            imgContainer.style.display = 'flex';
-            imgContainer.className = 'loading-shimmer';
-            imgContainer.innerHTML = '<div class="donut-spinner"></div>';
-
-            // Scroll down to ensure loading UI is visible
-            setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 50);
-
-            const prompt = `A professional food photography macro shot of a ${state.type} donut (${state.flavor}) with thick ${state.glaze} glaze and ${state.selectedToppings.map(t => t.name).join(', ') || 'no toppings'}. High detail, soft bakery lighting, 8k resolution.`;
-
-            try {
-                const response = await fetch('/.netlify/functions/api', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'image',
-                        prompt: prompt
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Imagen API Error (${response.status}): ${errorText}`);
+        function drawPolyBgOnCtx(ctx, W, H) {
+            let seed = 0xD06EB4FF;
+            const rng = () => { seed ^= seed << 13; seed ^= seed >>> 17; seed ^= seed << 5; return (seed >>> 0) / 0xFFFFFFFF; };
+            const COLS = 7, ROWS = 10;
+            const cw = W / COLS, ch = H / ROWS;
+            const pts = [];
+            for (let r = 0; r <= ROWS; r++) {
+                for (let c = 0; c <= COLS; c++) {
+                    const edge = (c === 0 || c === COLS || r === 0 || r === ROWS);
+                    pts.push({
+                        x: Math.max(0, Math.min(W, c * cw + (edge ? 0 : (rng() - 0.5) * cw * 0.72))),
+                        y: Math.max(0, Math.min(H, r * ch + (edge ? 0 : (rng() - 0.5) * ch * 0.72)))
+                    });
                 }
-
-                const data = await response.json();
-                
-                if (!data.predictions || !data.predictions[0]) {
-                    throw new Error("No image data returned from API.");
+            }
+            function tri(a, b, c2) {
+                const cx = (a.x + b.x + c2.x) / 3, cy = (a.y + b.y + c2.y) / 3;
+                const d = Math.min(cx, W - cx, cy, H - cy);
+                const threshold = Math.min(W, H) * 0.5;
+                const alpha = Math.max(0.12, (1 - d / threshold) * 0.6);
+                const cornerDist = Math.min(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy));
+                const isPurple = cornerDist < Math.min(W, H) * 0.38 && rng() > 0.35;
+                const h = isPurple ? 265 + rng() * 35 : 318 + rng() * 28;
+                const s = isPurple ? 52 + rng() * 28 : 62 + rng() * 24;
+                const l = isPurple ? 24 + rng() * 24 : 46 + rng() * 22;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c2.x, c2.y);
+                ctx.closePath();
+                ctx.fillStyle = `hsl(${h},${s}%,${l}%)`;
+                ctx.fill();
+                ctx.strokeStyle = `hsla(${h},${s}%,${Math.max(l - 12, 18)}%,0.45)`;
+                ctx.lineWidth = 0.6; ctx.stroke();
+                ctx.restore();
+            }
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const i = r * (COLS + 1) + c;
+                    tri(pts[i], pts[i + 1], pts[i + COLS + 1]);
+                    tri(pts[i + 1], pts[i + COLS + 2], pts[i + COLS + 1]);
                 }
-
-                const imageUrl = `data:image/png;base64,${data.predictions[0].bytesBase64Encoded}`;
-
-                const img = new Image();
-                img.onload = () => {
-                    imgContainer.classList.remove('loading-shimmer');
-                    imgContainer.innerHTML = '';
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    imgContainer.appendChild(img);
-                    btn.style.display = 'none'; 
-                    // Scroll down again once image loads
-                    setTimeout(() => scrollArea.scrollTop = scrollArea.scrollHeight, 50);
-                };
-                img.onerror = () => { throw new Error("Failed to develop the photo."); };
-                img.src = imageUrl;
-
-            } catch (e) {
-                console.error(e);
-                imgContainer.innerHTML = `<div style='padding:20px; text-align:center; color:#dc2626; font-weight:bold; font-size: 0.9rem;'>Camera Error:<br><br>${e.message}</div>`;
-                btn.disabled = false;
-                btn.innerText = "📸";
             }
         }
+
+        function wrapText(ctx, text, x, y, maxW, lineH) {
+            const words = text.split(' ');
+            let line = '';
+            for (const word of words) {
+                const test = line + word + ' ';
+                if (ctx.measureText(test).width > maxW && line) {
+                    ctx.fillText(line.trim(), x, y);
+                    y += lineH; line = word + ' ';
+                } else { line = test; }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        function generateShareCard() {
+            const review = state.reviews[state.currentChef];
+            if (!review) return;
+            document.fonts.ready.then(() => {
+                const W = 420, H = 590, SC = 2;
+                const canvas = document.createElement('canvas');
+                canvas.width = W * SC; canvas.height = H * SC;
+                const ctx = canvas.getContext('2d');
+                ctx.scale(SC, SC);
+
+                const cc = chefColors[state.currentChef];
+                const isFresh = review.score > 7;
+                const chefIcon = { Gordon: '⭐', Fieri: '🔥', Jacques: '🎩' }[state.currentChef];
+
+                // Clip to card shape
+                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 22); ctx.clip();
+
+                // Base fill + poly bg
+                ctx.fillStyle = '#ff6b9e'; ctx.fillRect(0, 0, W, H);
+                drawPolyBgOnCtx(ctx, W, H);
+
+                // --- TITLE BAR ---
+                const TITLE_H = 72;
+                ctx.fillStyle = cc.titleBg; ctx.fillRect(0, 0, W, TITLE_H);
+                ctx.fillStyle = '#4a2c2a'; ctx.fillRect(0, TITLE_H - 3, W, 3);
+                ctx.fillStyle = 'white';
+                ctx.font = '24px "Fredoka One"';
+                ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+                ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 2; ctx.shadowBlur = 4;
+                ctx.fillText(chefs[state.currentChef].title.toUpperCase(), 18, TITLE_H / 2);
+                ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; ctx.shadowColor = 'transparent';
+
+                // Score badge (overlapping title bar right, into illustration area)
+                const BX = W - 50, BY = TITLE_H + 12, BR = 38;
+                ctx.beginPath(); ctx.arc(BX + 4, BY + 4, BR, 0, Math.PI * 2); ctx.fillStyle = '#5B2D8E'; ctx.fill();
+                ctx.beginPath(); ctx.arc(BX, BY, BR, 0, Math.PI * 2);
+                ctx.fillStyle = '#fcd34d'; ctx.fill();
+                ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 4; ctx.stroke();
+                ctx.fillStyle = '#4a2c2a'; ctx.font = '34px "Fredoka One"';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(review.score, BX, BY + 1);
+
+                // --- ILLUSTRATION AREA ---
+                const ILL_Y = TITLE_H + 3, ILL_H = 136;
+                ctx.font = '76px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(chefIcon, W / 2 - 20, ILL_Y + ILL_H / 2);
+
+                const tStr = state.selectedToppings.length ? state.selectedToppings.map(t => t.name).join(' · ') : 'No Toppings';
+                const buildStr = `${state.type === 'Cake' ? state.flavor + ' Cake' : 'Glazed'} · ${state.glaze} · ${tStr}`;
+                ctx.font = '600 12px Oswald'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
+                ctx.fillStyle = 'rgba(255,255,255,0.9)';
+                ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 3;
+                ctx.fillText(buildStr, W / 2, ILL_Y + ILL_H - 4);
+                ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
+
+                // --- ROAST TEXT BOX ---
+                const TB_X = 16, TB_Y = ILL_Y + ILL_H + 10, TB_W = W - 32, TB_H = 196;
+                ctx.strokeStyle = cc.border; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.roundRect(TB_X - 3, TB_Y - 3, TB_W + 6, TB_H + 6, 15); ctx.stroke();
+                ctx.fillStyle = '#fff9f0';
+                ctx.beginPath(); ctx.roundRect(TB_X, TB_Y, TB_W, TB_H, 12); ctx.fill();
+                ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 2; ctx.stroke();
+                ctx.fillStyle = '#4a2c2a'; ctx.font = 'bold 15px Nunito';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+                wrapText(ctx, review.critique, W / 2, TB_Y + 14, TB_W - 24, 22);
+
+                // --- FRESH / FAIL BANNER ---
+                const BAN_Y = TB_Y + TB_H + 10, BAN_H = 46;
+                ctx.fillStyle = isFresh ? '#fcd34d' : '#dc2626';
+                ctx.beginPath(); ctx.roundRect(TB_X, BAN_Y, TB_W, BAN_H, 8); ctx.fill();
+                ctx.strokeStyle = '#4a2c2a'; ctx.lineWidth = 2.5; ctx.stroke();
+                ctx.fillStyle = isFresh ? '#4a2c2a' : 'white';
+                ctx.font = '24px "Fredoka One"'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                ctx.fillText(isFresh ? '🍩 FRESH' : 'FAIL 💀', W / 2, BAN_Y + BAN_H / 2);
+
+                // --- FOOTER ---
+                const FOOT_Y = BAN_Y + BAN_H + 10;
+                ctx.fillStyle = 'rgba(74,44,42,0.92)';
+                ctx.fillRect(0, FOOT_Y, W, H - FOOT_Y + 2);
+                ctx.fillStyle = 'white'; ctx.font = '18px "Fredoka One"';
+                ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+                ctx.fillText('DOUGH DROP', W / 2, FOOT_Y + 10);
+                ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '500 12px Oswald';
+                ctx.fillText('analynet.xyz', W / 2, FOOT_Y + 32);
+
+                // --- OUTER FRAME (on top of everything) ---
+                ctx.strokeStyle = cc.border; ctx.lineWidth = 10;
+                ctx.beginPath(); ctx.roundRect(5, 5, W - 10, H - 10, 18); ctx.stroke();
+                ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.roundRect(12, 12, W - 24, H - 24, 13); ctx.stroke();
+
+                // --- SHARE / DOWNLOAD ---
+                canvas.toBlob(blob => {
+                    const file = new File([blob], 'dough-drop-roast.png', { type: 'image/png' });
+                    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+                        navigator.share({ files: [file], title: 'My Dough Drop Roast Card' }).catch(() => showCardModal(canvas.toDataURL()));
+                    } else {
+                        showCardModal(canvas.toDataURL());
+                    }
+                }, 'image/png');
+            });
+        }
+
+        function showCardModal(dataUrl) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;';
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.style.cssText = 'max-width:min(88vw,340px);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);';
+            const isMobile = 'ontouchstart' in window;
+            const hint = document.createElement('p');
+            hint.textContent = isMobile ? 'LONG PRESS IMAGE TO SAVE' : '';
+            hint.style.cssText = 'color:rgba(255,255,255,0.6);font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;margin:0;text-align:center;';
+            const saveBtn = document.createElement('button');
+            saveBtn.textContent = '↓ SAVE CARD';
+            saveBtn.style.cssText = `background:#fcd34d;color:#4a2c2a;border:3px solid #4a2c2a;padding:10px 28px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;display:${isMobile ? 'none' : 'block'};`;
+            saveBtn.onclick = () => { const a = document.createElement('a'); a.download = 'dough-drop-roast.png'; a.href = dataUrl; a.click(); };
+            const closeBtn = document.createElement('button');
+            closeBtn.textContent = '✕ CLOSE';
+            closeBtn.style.cssText = 'background:none;color:rgba(255,255,255,0.45);border:none;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;cursor:pointer;';
+            closeBtn.onclick = () => document.body.removeChild(overlay);
+            overlay.addEventListener('click', e => { if (e.target === overlay) document.body.removeChild(overlay); });
+            overlay.append(img, hint, saveBtn, closeBtn);
+            document.body.appendChild(overlay);
+        }
+
 
         let scene, camera, renderer, donutGroup, frostingGroup, rackGroup, toppingGroup, sharedFrostingMat;
 
@@ -1216,6 +1367,11 @@
                     }, delay);
                 });
             }, 400); 
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
         }
     </script>
 </body>
