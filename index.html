@@ -854,11 +854,17 @@
 
         function generateShareCard() {
             const review = state.reviews[state.currentChef];
-            alert('clicked. review: ' + (review ? JSON.stringify(review).slice(0,80) : 'NONE'));
             if (!review) return;
-            document.fonts.ready.then(() => {
-                const appIcon = new Image();
-                appIcon.src = 'dough-drop.png';
+            const iconPromise = fetch('dough-drop.png')
+                .then(r => r.blob())
+                .then(b => new Promise(res => {
+                    const u = URL.createObjectURL(b);
+                    const img = new Image();
+                    img.onload = () => { URL.revokeObjectURL(u); res(img); };
+                    img.onerror = () => { URL.revokeObjectURL(u); res(null); };
+                    img.src = u;
+                })).catch(() => null);
+            Promise.all([document.fonts.ready, iconPromise]).then(([, appIcon]) => {
                 const W = 420, H = 600, SC = 2;
                 const canvas = document.createElement('canvas');
                 canvas.width = W * SC; canvas.height = H * SC;
@@ -943,27 +949,31 @@
                 ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
                 ctx.fillText('THE VERDICT', TB_X + 28, TB_Y - TAB_H / 2 + 4);
 
-                // Auto-size roast text to fill the box
+                // Auto-size roast text + vertically center in box
                 const TEXT_MAX_W = TB_W - 36;
-                const TEXT_MAX_H = TB_H - 30;
-                let fontSize = 22;
+                const TEXT_MAX_H = TB_H - 40;
+                let fontSize = 30;
+                let lineCount = 1;
                 while (fontSize > 11) {
                     ctx.font = `bold ${fontSize}px Nunito`;
                     const words = review.critique.split(' ');
-                    let line = '', lines = 1;
+                    let line = '', cnt = 1;
                     for (const w of words) {
                         const t = line + w + ' ';
-                        if (ctx.measureText(t).width > TEXT_MAX_W && line) { lines++; line = w + ' '; }
+                        if (ctx.measureText(t).width > TEXT_MAX_W && line) { cnt++; line = w + ' '; }
                         else { line = t; }
                     }
-                    if (lines * Math.ceil(fontSize * 1.52) <= TEXT_MAX_H) break;
+                    lineCount = cnt;
+                    if (lineCount * Math.ceil(fontSize * 1.5) <= TEXT_MAX_H) break;
                     fontSize--;
                 }
-                const lineH = Math.ceil(fontSize * 1.52);
+                const lineH = Math.ceil(fontSize * 1.5);
+                const totalTextH = lineCount * lineH;
+                const textStartY = TB_Y + Math.round((TB_H - totalTextH) / 2);
                 ctx.fillStyle = '#2a1a0e';
                 ctx.font = `bold ${fontSize}px Nunito`;
                 ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-                wrapText(ctx, review.critique, W / 2, TB_Y + 22, TEXT_MAX_W, lineH);
+                wrapText(ctx, review.critique, W / 2, textStartY, TEXT_MAX_W, lineH);
 
                 // --- FRESH / FAIL STAMP ---
                 const STAMP_CX = W / 2, STAMP_CY = TB_Y + TB_H + 36;
@@ -984,14 +994,13 @@
                 ctx.fillText(isFresh ? '🍩 FRESH' : 'FAIL 💀', 0, 1);
                 ctx.restore();
 
-                // --- FOOTER with app icon ---
+                // --- FOOTER ---
                 const FOOT_H = 58, FOOT_Y = H - FOOT_H;
                 ctx.fillStyle = 'rgba(42,26,14,0.95)';
                 ctx.fillRect(0, FOOT_Y, W, FOOT_H);
-                const ICON_SIZE = 30;
-                const ICON_X = W / 2 - 72;
+                const ICON_SIZE = 30, ICON_X = W / 2 - 72;
                 const ICON_Y = FOOT_Y + (FOOT_H - ICON_SIZE) / 2;
-                try { ctx.drawImage(appIcon, ICON_X, ICON_Y, ICON_SIZE, ICON_SIZE); } catch(e) {}
+                if (appIcon) ctx.drawImage(appIcon, ICON_X, ICON_Y, ICON_SIZE, ICON_SIZE);
                 const TXT_X = ICON_X + ICON_SIZE + 9;
                 ctx.fillStyle = 'white';
                 ctx.font = '17px "Fredoka One"';
@@ -1007,38 +1016,41 @@
                 ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 2;
                 ctx.beginPath(); ctx.roundRect(13, 13, W - 26, H - 26, 16); ctx.stroke();
 
-                // --- SHARE / DOWNLOAD ---
+                // --- SHOW PREVIEW MODAL ---
                 canvas.toBlob(blob => {
                     const file = new File([blob], 'dough-drop-roast.png', { type: 'image/png' });
-                    if (navigator.share && navigator.canShare?.({ files: [file] })) {
-                        navigator.share({ files: [file], title: 'DoughDrop Roast' }).catch(() => showCardModal(canvas.toDataURL()));
-                    } else {
-                        showCardModal(canvas.toDataURL());
-                    }
+                    showCardModal(canvas.toDataURL(), file);
                 }, 'image/png');
             });
         }
 
-        function showCardModal(dataUrl) {
+        function showCardModal(dataUrl, file) {
             const overlay = document.createElement('div');
-            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;';
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px;';
             const img = document.createElement('img');
             img.src = dataUrl;
-            img.style.cssText = 'max-width:min(88vw,340px);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);';
-            const isMobile = 'ontouchstart' in window;
-            const hint = document.createElement('p');
-            hint.textContent = isMobile ? 'LONG PRESS IMAGE TO SAVE' : '';
-            hint.style.cssText = 'color:rgba(255,255,255,0.6);font-family:Oswald,sans-serif;font-size:12px;letter-spacing:2px;margin:0;text-align:center;';
+            img.style.cssText = 'max-width:min(86vw,320px);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.6);';
+            const btnRow = document.createElement('div');
+            btnRow.style.cssText = 'display:flex;gap:10px;align-items:center;';
+            const canShare = file && navigator.share && navigator.canShare?.({ files: [file] });
+            if (canShare) {
+                const shareBtn = document.createElement('button');
+                shareBtn.textContent = '↑ SHARE';
+                shareBtn.style.cssText = `background:#5B2D8E;color:white;border:3px solid #4a2c2a;padding:10px 24px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;`;
+                shareBtn.onclick = () => navigator.share({ files: [file], title: 'DoughDrop Roast' }).catch(() => {});
+                btnRow.appendChild(shareBtn);
+            }
             const saveBtn = document.createElement('button');
-            saveBtn.textContent = '↓ SAVE CARD';
-            saveBtn.style.cssText = `background:#fcd34d;color:#4a2c2a;border:3px solid #4a2c2a;padding:10px 28px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;display:${isMobile ? 'none' : 'block'};`;
+            saveBtn.textContent = '↓ SAVE';
+            saveBtn.style.cssText = `background:#fcd34d;color:#4a2c2a;border:3px solid #4a2c2a;padding:10px 24px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;`;
             saveBtn.onclick = () => { const a = document.createElement('a'); a.download = 'dough-drop-roast.png'; a.href = dataUrl; a.click(); };
+            btnRow.appendChild(saveBtn);
             const closeBtn = document.createElement('button');
             closeBtn.textContent = '✕ CLOSE';
             closeBtn.style.cssText = 'background:none;color:rgba(255,255,255,0.45);border:none;font-family:Oswald,sans-serif;font-size:11px;letter-spacing:2px;cursor:pointer;';
             closeBtn.onclick = () => document.body.removeChild(overlay);
             overlay.addEventListener('click', e => { if (e.target === overlay) document.body.removeChild(overlay); });
-            overlay.append(img, hint, saveBtn, closeBtn);
+            overlay.append(img, btnRow, closeBtn);
             document.body.appendChild(overlay);
         }
 
