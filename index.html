@@ -255,7 +255,6 @@
             max-height: 86vh;
             flex-direction: column; align-items: center;
             box-shadow: 0px 20px 0px rgba(74, 44, 42, 0.15);
-            overflow: hidden;
         }
 
         #verdict-container.show {
@@ -345,28 +344,21 @@
         /* FRESH / FAIL ribbon */
         .verdict-ribbon {
             position: absolute;
-            top: 18px;
-            font-family: 'Oswald', sans-serif;
-            font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-            padding: 3px 12px;
-            border: 2px solid var(--text-dark);
-            border-radius: 4px;
-            box-shadow: 2px 2px 0 var(--text-dark);
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-4deg);
+            z-index: 25;
             display: none;
-            z-index: 30;
+            white-space: nowrap;
+            font-family: 'Oswald', sans-serif;
+            font-size: 11px; font-weight: 700; letter-spacing: 2px;
+            padding: 4px 18px;
+            border: 2px solid var(--text-dark);
+            border-radius: 50px;
+            box-shadow: 2px 2px 0 var(--text-dark);
         }
-        .verdict-ribbon.fresh {
-            right: 12px;
-            background: var(--shop-yellow);
-            color: var(--text-dark);
-            transform: rotate(3deg);
-        }
-        .verdict-ribbon.fail {
-            left: 12px;
-            background: #dc2626;
-            color: white;
-            transform: rotate(-3deg);
-        }
+        .verdict-ribbon.fresh { background: var(--shop-yellow); color: var(--text-dark); }
+        .verdict-ribbon.fail  { background: #dc2626; color: white; }
 
         .btn-camera-egg {
             background: none;
@@ -503,7 +495,6 @@
     
     <div id="verdict-container">
         <div class="verdict-ribbon" id="verdict-ribbon"></div>
-
         <div class="verdict-header">
             <h2 id="chef-title">Gordon Ramsay Says:</h2>
             <div class="score-badge" id="score-display">?</div>
@@ -876,15 +867,16 @@
                 const chefIcon = { Gordon: '⭐', Fieri: '🔥', Jacques: '🎩' }[state.currentChef];
                 const chefLabel = { Gordon: 'GORDON RAMSAY', Fieri: 'GUY FIERI', Jacques: 'JACQUES PÉPIN' }[state.currentChef];
 
-                // --- BASE: pink fill + poly bg (full card) ---
-                ctx.save();
-                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 26); ctx.clip();
-                ctx.fillStyle = '#ff6b9e'; ctx.fillRect(0, 0, W, H);
-                drawPolyBgOnCtx(ctx, W, H);
-                ctx.restore();
+                // --- BORDER: filled chef-color rounded rect ---
+                ctx.fillStyle = cc.border;
+                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 26); ctx.fill();
 
-                // Clip all subsequent drawing to card shape
-                ctx.beginPath(); ctx.roundRect(0, 0, W, H, 26); ctx.clip();
+                // --- CARD SURFACE + clip all content inside border ---
+                ctx.fillStyle = '#ff6b9e';
+                ctx.beginPath(); ctx.roundRect(8, 8, W - 16, H - 16, 20); ctx.fill();
+                ctx.save();
+                ctx.beginPath(); ctx.roundRect(8, 8, W - 16, H - 16, 20); ctx.clip();
+                drawPolyBgOnCtx(ctx, W, H);
 
                 // --- HEADER BAND ---
                 const HDR_H = 100;
@@ -933,7 +925,7 @@
                 ctx.shadowBlur = 0;
 
                 // --- ROAST TEXT BOX ---
-                const TB_X = 18, TB_Y = BD_Y + 48, TB_W = W - 36, TB_H = 248;
+                const TB_X = 18, TB_Y = BD_Y + 65, TB_W = W - 36, TB_H = 235;
                 // Cream box
                 ctx.fillStyle = '#fff9f0';
                 ctx.beginPath(); ctx.roundRect(TB_X, TB_Y, TB_W, TB_H, 16); ctx.fill();
@@ -1005,16 +997,15 @@
                 ctx.fillStyle = 'white';
                 ctx.font = '17px "Fredoka One"';
                 ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-                ctx.fillText('DOUGH DROP', TXT_X, FOOT_Y + 12);
+                ctx.fillText('DOUGH DROP', TXT_X, FOOT_Y + 8);
                 ctx.fillStyle = 'rgba(255,255,255,0.45)';
                 ctx.font = '500 11px Oswald';
-                ctx.fillText('analynet.xyz', TXT_X, FOOT_Y + 36);
+                ctx.fillText('analynet.xyz', TXT_X, FOOT_Y + 28);
 
-                // --- OUTER FRAME ---
-                ctx.strokeStyle = cc.border; ctx.lineWidth = 10;
-                ctx.beginPath(); ctx.roundRect(5, 5, W - 10, H - 10, 22); ctx.stroke();
-                ctx.strokeStyle = 'rgba(255,255,255,0.38)'; ctx.lineWidth = 2;
-                ctx.beginPath(); ctx.roundRect(13, 13, W - 26, H - 26, 16); ctx.stroke();
+                // --- RESTORE CLIP, draw inner highlight over border ---
+                ctx.restore();
+                ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 2;
+                ctx.beginPath(); ctx.roundRect(14, 14, W - 28, H - 28, 17); ctx.stroke();
 
                 // --- SHOW PREVIEW MODAL ---
                 canvas.toBlob(blob => {
