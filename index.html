@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dough Drop</title>
     <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/dough-drop.png" type="image/png">
     <meta name="theme-color" content="#5B2D8E">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -651,11 +652,11 @@
 
         const toppingsData = [
             { name: "Sprinkles", icon: "🌈", colors: [0xFF69B4, 0x00FF00, 0x00BFFF, 0xFFFF00], type: 'cylinder' },
-            { name: "Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
-            { name: "Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
+            { name: "Bacon Bits", icon: "🥓", colors: [0x7a2815, 0x5c1a06, 0x8b321b], type: 'box' },
+            { name: "Chili Flakes", icon: "🌶️", colors: [0xc22002, 0x941400, 0xed3d18], type: 'flake' },
             { name: "Takis", icon: "🧨", colors: [0xff0000, 0xcc0000, 0xaa0000], type: 'dust' },
-            { name: "Cap'n", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
-            { name: "Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
+            { name: "Cap'n Crunch", icon: "🥣", colors: [0xffd700, 0xffe55c, 0xe8ba15], type: 'crunch' },
+            { name: "Mini Choc Chips", icon: "🍫", colors: [0x2a140c, 0x1f0e08], type: 'chip' }
         ];
 
         const tc = document.getElementById('topping-container');
@@ -704,7 +705,7 @@
                 document.getElementById('score-display').innerText = '?';
                 document.getElementById('verdict-ribbon').style.display = 'none';
                 const review = await getChefReview(chefKey);
-                state.reviews[chefKey] = review;
+                if (review.score > 0) state.reviews[chefKey] = review;
                 displayReview(review);
             }
         }
@@ -732,7 +733,7 @@
             const hasTopping = name => state.selectedToppings.some(t => t.name === name);
 
             const isJacquesEgg = state.type === 'Cake' && state.flavor === 'Vanilla' && state.glaze === 'Strawberry' && state.selectedToppings.length === 1 && hasTopping('Sprinkles');
-            const isGuyEgg    = state.type === 'Fluffy' && state.glaze === 'Maple' && state.selectedToppings.length === 2 && hasTopping('Bits') && hasTopping("Cap'n");
+            const isGuyEgg    = state.type === 'Fluffy' && state.glaze === 'Maple' && state.selectedToppings.length === 2 && hasTopping('Bacon Bits') && hasTopping("Cap'n Crunch");
             const isGordonEgg = state.type === 'Fluffy' && state.glaze === 'Vanilla' && state.selectedToppings.length === 0;
 
             if (isJacquesEgg && chefKey === 'Jacques') {
@@ -1010,9 +1011,9 @@
 
                 // --- SHOW PREVIEW MODAL ---
                 canvas.toBlob(blob => {
-                    const file = new File([blob], 'dough-drop-roast.png', { type: 'image/png' });
-                    showCardModal(canvas.toDataURL(), file);
-                }, 'image/png');
+                    const file = new File([blob], 'dough-drop-roast.jpg', { type: 'image/jpeg' });
+                    showCardModal(canvas.toDataURL('image/jpeg', 0.88), file);
+                }, 'image/jpeg', 0.88);
             });
         }
 
@@ -1029,7 +1030,7 @@
                 const shareBtn = document.createElement('button');
                 shareBtn.textContent = '↑ SHARE';
                 shareBtn.style.cssText = `background:#5B2D8E;color:white;border:3px solid #4a2c2a;padding:10px 24px;border-radius:50px;box-shadow:0 4px 0 #4a2c2a;font-family:'Fredoka One',cursive;font-size:16px;cursor:pointer;letter-spacing:1px;`;
-                shareBtn.onclick = () => navigator.share({ files: [file], title: 'DoughDrop Roast', text: 'Roasted by DoughDrop 🍩', url: 'https://analynet.xyz' }).catch(() => {});
+                shareBtn.onclick = () => navigator.share({ files: [file], title: 'DoughDrop Roast', text: 'Get Roasted:', url: 'https://analynet.xyz' }).catch(() => {});
                 btnRow.appendChild(shareBtn);
             }
             const saveBtn = document.createElement('button');
@@ -1439,7 +1440,7 @@
                     })();
 
                     const review = await initialReviewPromise;
-                    state.reviews[state.currentChef] = review;
+                    if (review.score > 0) state.reviews[state.currentChef] = review;
                     displayReview(review);
 
                     // Always give at least 1s of donut admiration; if the API was
