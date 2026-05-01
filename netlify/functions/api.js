@@ -43,25 +43,30 @@ exports.handler = async (event) => {
       // THE FIX: Using the standard, stable model name
       const chef = (system || '').includes('Gordon') ? 'Gordon' : (system || '').includes('Jacques') ? 'Jacques' : 'Fieri';
       console.log(`[dough-drop] roast request chef=${chef} ts=${new Date().toISOString()}`);
-      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
       requestBody = {
         contents: [{ parts: [{ text: query }] }],
         systemInstruction: { parts: [{ text: system }] },
         generationConfig: {
           responseMimeType: "application/json",
-          responseSchema: { type: "OBJECT", properties: { critique: { type: "STRING" }, score: { type: "NUMBER" } } },
-          thinkingConfig: { thinkingBudget: 0 }
+          responseSchema: { type: "OBJECT", properties: { critique: { type: "STRING" }, score: { type: "NUMBER" } } }
         }
       };
     }
 
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
-    });
-
-    const data = await response.json();
+    let response, data;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      if (attempt > 0) await new Promise(r => setTimeout(r, 600));
+      response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+        signal: AbortSignal.timeout(4000)
+      });
+      data = await response.json();
+      if (response.status !== 503) break;
+      console.log(`[dough-drop] 503 on attempt ${attempt + 1}, retrying...`);
+    }
 
     return {
       statusCode: 200,
