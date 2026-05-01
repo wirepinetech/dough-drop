@@ -56,8 +56,12 @@ exports.handler = async (event) => {
     }
 
     let response, data;
-    for (let attempt = 0; attempt < 2; attempt++) {
-      if (attempt > 0) await new Promise(r => setTimeout(r, 600));
+    for (let attempt = 0; attempt < 3; attempt++) {
+      if (attempt > 0) {
+        const backoff = Math.pow(2, attempt - 1) * 1000 + Math.random() * 500;
+        console.log(`[dough-drop] 503 on attempt ${attempt}, retrying after ${Math.round(backoff)}ms`);
+        await new Promise(r => setTimeout(r, backoff));
+      }
       response = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,7 +70,6 @@ exports.handler = async (event) => {
       });
       data = await response.json();
       if (response.status !== 503) break;
-      console.log(`[dough-drop] 503 on attempt ${attempt + 1}, retrying...`);
     }
 
     return {
