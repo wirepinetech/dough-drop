@@ -43,13 +43,14 @@ exports.handler = async (event) => {
       // THE FIX: Using the standard, stable model name
       const chef = (system || '').includes('Gordon') ? 'Gordon' : (system || '').includes('Jacques') ? 'Jacques' : 'Fieri';
       console.log(`[dough-drop] roast request chef=${chef} ts=${new Date().toISOString()}`);
-      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
       requestBody = {
         contents: [{ parts: [{ text: query }] }],
         systemInstruction: { parts: [{ text: system }] },
         generationConfig: {
           responseMimeType: "application/json",
-          responseSchema: { type: "OBJECT", properties: { critique: { type: "STRING" }, score: { type: "NUMBER" } } }
+          responseSchema: { type: "OBJECT", properties: { critique: { type: "STRING" }, score: { type: "NUMBER" } } },
+          thinkingConfig: { thinkingBudget: 0 }
         }
       };
     }
